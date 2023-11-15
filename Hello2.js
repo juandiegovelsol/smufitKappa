@@ -144,24 +144,163 @@ okButton.onClick = function () {
       colorTitleBox.alignChildren = ["left", "top"];
 
       // Function to create a text frame with a custom ID property
-      function createTextFrameWithId(content, id, position, textSize) {
+      function createTextFrameWithId(content, id, position, textSize, r, g, b) {
         var textFrame = newDocument.textFrames.add();
         textFrame.contents = content;
         textFrame.position = position;
         textFrame.customId = id;
         textFrame.textRange.characterAttributes.size = textSize;
+
+        var newColor = new RGBColor();
+        newColor.red = r; // Replace with your desired RGB values
+        newColor.green = g;
+        newColor.blue = b;
+
+        textFrame.textRange.characterAttributes.fillColor = newColor;
         return textFrame;
       }
 
       // Function to add a row of aligned text inputs for colors
-      function addColorRow(parent, labelText) {
+      /* function addColorRow(parent, labelText) {
         var colorGroup = parent.add("group");
         colorGroup.orientation = "row";
         colorGroup.alignChildren = ["left", "center"];
 
         colorGroup.add("statictext", undefined, labelText);
         colorGroup.add("edittext", undefined, "");
+      } */
+      function addColorRow(parent, labelText) {
+        var colorGroup = parent.add("group");
+        colorGroup.orientation = "row";
+        colorGroup.alignChildren = ["left", "center"];
+
+        colorGroup.add("statictext", undefined, labelText);
+        var colorEdit = colorGroup.add("edittext", undefined, "");
+        var colorButton = colorGroup.add(
+          "button",
+          undefined,
+          "Select RGB Color"
+        );
+
+        colorButton.onClick = function () {
+          var colorDialog = new Window("dialog", "Select RGB Color");
+          var colorGroupDialog = colorDialog.add("group");
+          var redInput = colorGroupDialog.add("edittext", undefined, "255");
+          var greenInput = colorGroupDialog.add("edittext", undefined, "255");
+          var blueInput = colorGroupDialog.add("edittext", undefined, "255");
+
+          var okButton = colorDialog.add("button", undefined, "OK");
+          var cancelButton = colorDialog.add("button", undefined, "Cancel");
+
+          okButton.onClick = function () {
+            var red = parseInt(redInput.text);
+            var green = parseInt(greenInput.text);
+            var blue = parseInt(blueInput.text);
+
+            if (isNaN(red) || isNaN(green) || isNaN(blue)) {
+              alert("Please enter valid RGB values.");
+              return;
+            }
+
+            if (
+              red < 0 ||
+              red > 255 ||
+              green < 0 ||
+              green > 255 ||
+              blue < 0 ||
+              blue > 255
+            ) {
+              alert("RGB values should be in the range of 0 to 255.");
+              return;
+            }
+
+            var rgbColor = [red, green, blue];
+            colorEdit.text = rgbColor.toString(); // Display the RGB color in the edit text field
+            colorDialog.close();
+          };
+
+          cancelButton.onClick = function () {
+            colorDialog.close();
+          };
+
+          colorDialog.show();
+        };
       }
+
+      /* function addColorRow(parent, labelText) {
+        var colorGroup = parent.add("group");
+        colorGroup.orientation = "row";
+        colorGroup.alignChildren = ["left", "center"];
+
+        colorGroup.add("statictext", undefined, labelText);
+        var colorEdit = colorGroup.add("edittext", undefined, "");
+        var pantoneEdit = colorGroup.add("edittext", undefined, "");
+
+        var colorButton = colorGroup.add(
+          "button",
+          undefined,
+          "Select RGB Color"
+        );
+
+        colorButton.onClick = function () {
+          var colorDialog = new Window("dialog", "Select RGB Color");
+          var colorGroupDialog = colorDialog.add("group");
+          var redInput = colorGroupDialog.add("edittext", undefined, "255");
+          var greenInput = colorGroupDialog.add("edittext", undefined, "255");
+          var blueInput = colorGroupDialog.add("edittext", undefined, "255");
+
+          var okButton = colorDialog.add("button", undefined, "OK");
+          var cancelButton = colorDialog.add("button", undefined, "Cancel");
+
+          okButton.onClick = function () {
+            var red = parseInt(redInput.text);
+            var green = parseInt(greenInput.text);
+            var blue = parseInt(blueInput.text);
+
+            if (isNaN(red) || isNaN(green) || isNaN(blue)) {
+              alert("Please enter valid RGB values.");
+              return;
+            }
+
+            if (
+              red < 0 ||
+              red > 255 ||
+              green < 0 ||
+              green > 255 ||
+              blue < 0 ||
+              blue > 255
+            ) {
+              alert("RGB values should be in the range of 0 to 255.");
+              return;
+            }
+
+            var rgbColor = [red / 255, green / 255, blue / 255];
+            var hexColor = rgbToHex(red, green, blue); // Convert RGB to Hex
+
+            colorEdit.text = hexColor; // Display the Hex color in the RGB field
+            colorEdit.graphics.backgroundColor = rgbColor; // Set the background color of the RGB field
+            pantoneEdit.text = "Pantone Color"; // Display Pantone color text (Replace this with your Pantone value)
+
+            colorDialog.close();
+          };
+
+          cancelButton.onClick = function () {
+            colorDialog.close();
+          };
+
+          colorDialog.show();
+        };
+      }
+
+      // Function to convert RGB to Hex
+      function rgbToHex(r, g, b) {
+        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+      }
+
+      function componentToHex(c) {
+        var hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+      } */
 
       //Function to get current date in the format DD/MM/YY
       function getCurrentDate() {
@@ -223,24 +362,103 @@ okButton.onClick = function () {
         }
 
         var textFrames = [
-          { content: username, id: "UserID", x: -1135, y: 1335 },
-          { content: flexoDigitalV, id: "FlexoID", x: -1100, y: 1275 },
-          { content: acabadoV, id: "AcabadoID", x: -900, y: 1275 },
-          { content: impresoraV, id: "ImpID", x: 693, y: 1275 },
-          { content: canalV, id: "CanalID", x: 671, y: 1210 },
-          { content: troquelV, id: "TroquelID", x: 1229, y: 1335 },
-          { content: porcentajeImpV, id: "%ImpID", x: 977, y: 1210 },
-          { content: selectedReference, id: "ColorRefID", x: -700, y: 1275 },
-          { content: currentDateV, id: "DateID", x: 1195, y: 1210 },
+          {
+            content: username,
+            id: "UserID",
+            x: -1135,
+            y: 1335,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: flexoDigitalV,
+            id: "FlexoID",
+            x: -1100,
+            y: 1275,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: acabadoV,
+            id: "AcabadoID",
+            x: -900,
+            y: 1275,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: impresoraV,
+            id: "ImpID",
+            x: 693,
+            y: 1275,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: canalV,
+            id: "CanalID",
+            x: 671,
+            y: 1210,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: troquelV,
+            id: "TroquelID",
+            x: 1229,
+            y: 1335,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: porcentajeImpV,
+            id: "%ImpID",
+            x: 977,
+            y: 1210,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: selectedReference,
+            id: "ColorRefID",
+            x: -700,
+            y: 1275,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
+          {
+            content: currentDateV,
+            id: "DateID",
+            x: 1195,
+            y: 1210,
+            r: 0,
+            g: 0,
+            b: 0,
+          },
         ];
 
         // Include color values in the text frames
         for (var j = 0; j < colorValues.length; j++) {
+          var colors = colorValues[j].split(",");
+          var r = +colors[0];
+          var g = +colors[1];
+          var b = +colors[2];
           textFrames.push({
             content: colorValues[j],
             id: "ColorID" + (j + 1),
             x: j * 262.0762 - 1026,
             y: 1210,
+            r: r,
+            g: g,
+            b: b,
           });
         }
 
@@ -252,7 +470,10 @@ okButton.onClick = function () {
             textFrames[k].content, //+ " (" + textFrames[k].id + ")",
             textFrames[k].id,
             [textFrames[k].x, textFrames[k].y],
-            textSize
+            textSize,
+            textFrames[k].r,
+            textFrames[k].g,
+            textFrames[k].b
           );
         }
 
