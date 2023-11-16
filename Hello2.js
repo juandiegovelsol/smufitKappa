@@ -1,3 +1,4 @@
+var AIversion = version.slice(0, 2);
 // Open the default document
 var newDocument = app.open(
   File(
@@ -91,6 +92,8 @@ okButton.onClick = function () {
       var symbolItem3 = app.activeDocument.symbolItems.add(symbols[0]);
       var insertionPoint3 = [0 - 1391, 1598];
       symbolItem3.position = insertionPoint3;
+      symbolItem3.breakLink();
+      //app.activeDocument.symbolItems[0].symbol = null;
 
       //Creates dialog window
       var fichaDialog = new Window("dialog", "Ficha");
@@ -250,6 +253,41 @@ okButton.onClick = function () {
         return formattedDate;
       }
 
+      function UpdateNow(position, value) {
+        if (AIversion == "10") {
+          /* var textArtItems = activeDocument.textArtItems;
+          for (var i = 0; i < textArtItems.length; i++) {
+            if (textArtItems[i].name.slice(0, 11) == "actualDate:") {
+              textArtItems[i].selected = true;
+              textArtItems[i].contents = currentDateV;
+            }
+          }
+          console.log(); */
+        } else {
+          var textFrames1 = activeDocument.textFrames;
+          textFrames1[position].selected = true;
+          if (position === 11) {
+            textFrames1[position].contents =
+              textFrames1[position].contents + " " + value;
+          } else {
+            textFrames1[position].contents = value;
+          }
+
+          /* for (var i = 0; i < textFrames1.length; i++) {
+            if (textFrames1[i].name.slice(0, 11) == "actualDate:") {
+              textFrames1[i].selected = true;
+              textFrames1[i].contents = currentDateV;
+            }
+          }
+          console.log(); */
+        }
+        /* var contr = confirm(MSG_createmultoutlines, 0, WR);
+        if (contr == true) {
+          contoursVariable();
+        } else {
+        } */
+      }
+
       addColorRow(colorTitleBox, "1:");
       addColorRow(colorTitleBox, "2:");
       addColorRow(colorTitleBox, "3:");
@@ -297,6 +335,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 3,
           },
           {
             content: flexoDigitalV,
@@ -306,6 +345,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 10,
           },
           {
             content: acabadoV,
@@ -315,6 +355,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 12,
           },
           {
             content: impresoraV,
@@ -324,6 +365,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 6,
           },
           {
             content: canalV,
@@ -333,6 +375,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 11,
           },
           {
             content: troquelV,
@@ -342,6 +385,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 0,
           },
           {
             content: porcentajeImpV,
@@ -351,6 +395,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 4,
           },
           {
             content: selectedReference,
@@ -360,6 +405,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 7,
           },
           {
             content: currentDateV,
@@ -369,6 +415,7 @@ okButton.onClick = function () {
             r: 0,
             g: 0,
             b: 0,
+            position: 5,
           },
         ];
 
@@ -387,22 +434,28 @@ okButton.onClick = function () {
             r: r,
             g: g,
             b: b,
+            position: 19 - j,
           });
         }
 
         //set te text size
         var textSize = 50;
 
+        //Insert text frames
         for (var k = 0; k < textFrames.length; k++) {
-          createTextFrameWithId(
-            textFrames[k].content, //+ " (" + textFrames[k].id + ")",
-            textFrames[k].id,
-            [textFrames[k].x, textFrames[k].y],
-            textSize,
-            textFrames[k].r,
-            textFrames[k].g,
-            textFrames[k].b
-          );
+          if (textFrames[k].id === "TroquelID") {
+            createTextFrameWithId(
+              textFrames[k].content,
+              textFrames[k].id,
+              [textFrames[k].x, textFrames[k].y],
+              textSize,
+              textFrames[k].r,
+              textFrames[k].g,
+              textFrames[k].b
+            );
+          } else {
+            UpdateNow(textFrames[k].position, textFrames[k].content);
+          }
         }
 
         fichaDialog.close();
@@ -413,7 +466,7 @@ okButton.onClick = function () {
       alert("No symbols found in the current document.");
     }
   }
-
+  //console.log();
   dialog.close();
 };
 
