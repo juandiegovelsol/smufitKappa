@@ -161,14 +161,6 @@ okButton.onClick = function () {
       }
 
       // Function to add a row of aligned text inputs for colors
-      /* function addColorRow(parent, labelText) {
-        var colorGroup = parent.add("group");
-        colorGroup.orientation = "row";
-        colorGroup.alignChildren = ["left", "center"];
-
-        colorGroup.add("statictext", undefined, labelText);
-        colorGroup.add("edittext", undefined, "");
-      } */
       function addColorRow(parent, labelText) {
         var colorGroup = parent.add("group");
         colorGroup.orientation = "row";
@@ -179,27 +171,37 @@ okButton.onClick = function () {
         var colorButton = colorGroup.add(
           "button",
           undefined,
-          "Select RGB Color"
+          "Seleccionar RGB"
         );
 
         colorButton.onClick = function () {
           var colorDialog = new Window("dialog", "Select RGB Color");
           var colorGroupDialog = colorDialog.add("group");
-          var redInput = colorGroupDialog.add("edittext", undefined, "255");
-          var greenInput = colorGroupDialog.add("edittext", undefined, "255");
-          var blueInput = colorGroupDialog.add("edittext", undefined, "255");
+          colorGroupDialog.add("statictext", undefined, "R:");
+          var redInput = colorGroupDialog.add("edittext", undefined, "0");
+          colorGroupDialog.add("statictext", undefined, "G:");
+          var greenInput = colorGroupDialog.add("edittext", undefined, "0");
+          colorGroupDialog.add("statictext", undefined, "B:");
+          var blueInput = colorGroupDialog.add("edittext", undefined, "0");
+          colorGroupDialog.add("statictext", undefined, "Pantone:");
+          var pantoneInput = colorGroupDialog.add("edittext", undefined, "XX");
 
           var okButton = colorDialog.add("button", undefined, "OK");
-          var cancelButton = colorDialog.add("button", undefined, "Cancel");
+          var cancelButton = colorDialog.add("button", undefined, "Cancelar");
 
           okButton.onClick = function () {
+            var pantone = pantoneInput.text;
             var red = parseInt(redInput.text);
             var green = parseInt(greenInput.text);
             var blue = parseInt(blueInput.text);
 
             if (isNaN(red) || isNaN(green) || isNaN(blue)) {
-              alert("Please enter valid RGB values.");
+              alert("Ingresar un valor RGB válido");
               return;
+            }
+
+            if (!pantone) {
+              alert("Ingresar un código Pantone válido");
             }
 
             if (
@@ -210,11 +212,11 @@ okButton.onClick = function () {
               blue < 0 ||
               blue > 255
             ) {
-              alert("RGB values should be in the range of 0 to 255.");
+              alert("los valores RGB deben estar entre 0 to 255.");
               return;
             }
 
-            var rgbColor = [red, green, blue];
+            var rgbColor = [red, green, blue, pantone];
             colorEdit.text = rgbColor.toString(); // Display the RGB color in the edit text field
             colorDialog.close();
           };
@@ -226,81 +228,6 @@ okButton.onClick = function () {
           colorDialog.show();
         };
       }
-
-      /* function addColorRow(parent, labelText) {
-        var colorGroup = parent.add("group");
-        colorGroup.orientation = "row";
-        colorGroup.alignChildren = ["left", "center"];
-
-        colorGroup.add("statictext", undefined, labelText);
-        var colorEdit = colorGroup.add("edittext", undefined, "");
-        var pantoneEdit = colorGroup.add("edittext", undefined, "");
-
-        var colorButton = colorGroup.add(
-          "button",
-          undefined,
-          "Select RGB Color"
-        );
-
-        colorButton.onClick = function () {
-          var colorDialog = new Window("dialog", "Select RGB Color");
-          var colorGroupDialog = colorDialog.add("group");
-          var redInput = colorGroupDialog.add("edittext", undefined, "255");
-          var greenInput = colorGroupDialog.add("edittext", undefined, "255");
-          var blueInput = colorGroupDialog.add("edittext", undefined, "255");
-
-          var okButton = colorDialog.add("button", undefined, "OK");
-          var cancelButton = colorDialog.add("button", undefined, "Cancel");
-
-          okButton.onClick = function () {
-            var red = parseInt(redInput.text);
-            var green = parseInt(greenInput.text);
-            var blue = parseInt(blueInput.text);
-
-            if (isNaN(red) || isNaN(green) || isNaN(blue)) {
-              alert("Please enter valid RGB values.");
-              return;
-            }
-
-            if (
-              red < 0 ||
-              red > 255 ||
-              green < 0 ||
-              green > 255 ||
-              blue < 0 ||
-              blue > 255
-            ) {
-              alert("RGB values should be in the range of 0 to 255.");
-              return;
-            }
-
-            var rgbColor = [red / 255, green / 255, blue / 255];
-            var hexColor = rgbToHex(red, green, blue); // Convert RGB to Hex
-
-            colorEdit.text = hexColor; // Display the Hex color in the RGB field
-            colorEdit.graphics.backgroundColor = rgbColor; // Set the background color of the RGB field
-            pantoneEdit.text = "Pantone Color"; // Display Pantone color text (Replace this with your Pantone value)
-
-            colorDialog.close();
-          };
-
-          cancelButton.onClick = function () {
-            colorDialog.close();
-          };
-
-          colorDialog.show();
-        };
-      }
-
-      // Function to convert RGB to Hex
-      function rgbToHex(r, g, b) {
-        return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
-      }
-
-      function componentToHex(c) {
-        var hex = c.toString(16);
-        return hex.length == 1 ? "0" + hex : hex;
-      } */
 
       //Function to get current date in the format DD/MM/YY
       function getCurrentDate() {
@@ -451,8 +378,9 @@ okButton.onClick = function () {
           var r = +colors[0];
           var g = +colors[1];
           var b = +colors[2];
+          var content = colors[3];
           textFrames.push({
-            content: colorValues[j],
+            content: content,
             id: "ColorID" + (j + 1),
             x: j * 262.0762 - 1026,
             y: 1210,
