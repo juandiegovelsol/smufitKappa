@@ -1,15 +1,21 @@
 var AIversion = version.slice(0, 2);
+
+var thisDocument = null;
+
+if (app.documents.length > 0) {
+  thisDocument = app.activeDocument;
+} else {
+  thisDocument = app.documents.add();
+}
+
+var defaultDocumentDirection =
+  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai";
 // Open the default document
-var newDocument = app.open(
-  File(
-    "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"
-  )
-);
 
 // Save a copy of the default document
-var newFilePath =
+/* var newFilePath =
   "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/newdefault.ai";
-newDocument.saveAs(new File(newFilePath));
+newDocument.saveAs(new File(newFilePath)); */
 
 // Create a dialog box with form fields
 var dialog = new Window("dialog", "Guias");
@@ -60,14 +66,18 @@ okButton.onClick = function () {
     username = $.getenv("USER");
   }
 
+  var newDocument = app.open(File(defaultDocumentDirection));
   var symbols = app.activeDocument.symbols;
 
   if (checkbox1Value) {
-    //var symbols = app.activeDocument.symbols;
     if (symbols.length > 0) {
-      var insertionPoint = [50, 750];
-      var symbolItem = app.activeDocument.symbolItems.add(symbols[4]);
-      symbolItem.position = insertionPoint;
+      var insertionPoint = [50, 50];
+      var sourceSymbol = symbols["SmurfitKappa logo"];
+      app.activeDocument = thisDocument;
+      var destinationDoc = app.activeDocument;
+      var symbolItem = newDocument.symbolItems.add(sourceSymbol);
+      var symbolCopy = symbolItem.duplicate(destinationDoc);
+      symbolCopy.position = insertionPoint;
     } else {
       alert("No symbols found in the current document.");
     }
@@ -75,11 +85,15 @@ okButton.onClick = function () {
 
   if (checkbox2Value) {
     //Inserts Escuadra
-    //var symbols2 = app.activeDocument.symbols;
+
     if (symbols.length > 0) {
-      var insertionPoint2 = [500, 100];
-      var symbolItem2 = app.activeDocument.symbolItems.add(symbols[6]);
-      symbolItem2.position = insertionPoint2;
+      var insertionPoint2 = [100, 100];
+      var sourceSymbol = symbols["Escuadra de registro"];
+      app.activeDocument = thisDocument;
+      var destinationDoc = app.activeDocument;
+      var symbolItem2 = newDocument.symbolItems.add(sourceSymbol);
+      var symbolCopy = symbolItem2.duplicate(destinationDoc);
+      symbolCopy.position = insertionPoint2;
     } else {
       alert("No symbols found in the current document.");
     }
@@ -89,11 +103,12 @@ okButton.onClick = function () {
     if (symbols.length > 0) {
       //Inserts ficha symbol
 
-      var symbolItem3 = app.activeDocument.symbolItems.add(symbols[0]);
-      var insertionPoint3 = [0 - 1391, 1598];
-      symbolItem3.position = insertionPoint3;
-      symbolItem3.breakLink();
-      //app.activeDocument.symbolItems[0].symbol = null;
+      var sourceSymbol = symbols["FITXA"];
+      app.activeDocument = thisDocument;
+      var destinationDoc = app.activeDocument;
+      var symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
+      var symbolCopy = symbolItem3.duplicate(destinationDoc);
+      symbolCopy.breakLink();
 
       //Creates dialog window
       var fichaDialog = new Window("dialog", "Ficha");
@@ -272,20 +287,7 @@ okButton.onClick = function () {
           } else {
             textFrames1[position].contents = value;
           }
-
-          /* for (var i = 0; i < textFrames1.length; i++) {
-            if (textFrames1[i].name.slice(0, 11) == "actualDate:") {
-              textFrames1[i].selected = true;
-              textFrames1[i].contents = currentDateV;
-            }
-          }
-          console.log(); */
         }
-        /* var contr = confirm(MSG_createmultoutlines, 0, WR);
-        if (contr == true) {
-          contoursVariable();
-        } else {
-        } */
       }
 
       addColorRow(colorTitleBox, "1:");
@@ -466,7 +468,8 @@ okButton.onClick = function () {
       alert("No symbols found in the current document.");
     }
   }
-  //console.log();
+
+  newDocument.close(SaveOptions.DONOTSAVECHANGES);
   dialog.close();
 };
 
