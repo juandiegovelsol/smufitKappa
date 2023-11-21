@@ -319,6 +319,34 @@ okButton.onClick = function () {
         var selectedReference = referenceDropdown.selection.text;
         var currentDateV = getCurrentDate();
 
+        var targetDoc = app.activeDocument;
+
+        var background = targetDoc.layers.add();
+        background.zOrder(ZOrderMethod.SENDTOBACK);
+        var rect = background.pathItems.rectangle(
+          targetDoc.artboards[0].artboardRect[1],
+          0,
+          targetDoc.width,
+          targetDoc.height
+        );
+
+        if (acabadoV === "Brillo") {
+          rect.fillColor.cyan = 8;
+          rect.fillColor.magenta = 3;
+          rect.fillColor.yellow = 0;
+          rect.fillColor.black = 20;
+        } else if (acabadoV === "Blanco") {
+          rect.fillColor.cyan = 0;
+          rect.fillColor.magenta = 0;
+          rect.fillColor.yellow = 0;
+          rect.fillColor.black = 0;
+        } else if (acabadoV === "Marrón") {
+          rect.fillColor.black = 35;
+          rect.fillColor.cyan = 0;
+          rect.fillColor.magenta = 23;
+          rect.fillColor.yellow = 41;
+        }
+
         // Access the color values inside the colorTitleBox
         var colorValues = [];
         for (var i = 0; i < colorTitleBox.children.length; i++) {
