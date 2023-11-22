@@ -319,6 +319,7 @@ okButton.onClick = function () {
         var selectedReference = referenceDropdown.selection.text;
         var currentDateV = getCurrentDate();
 
+        //Inserts the background layer depending on user selection
         var targetDoc = app.activeDocument;
 
         var background = targetDoc.layers.add();
@@ -330,21 +331,37 @@ okButton.onClick = function () {
           targetDoc.height
         );
 
-        if (acabadoV === "Brillo") {
-          rect.fillColor.cyan = 8;
-          rect.fillColor.magenta = 3;
-          rect.fillColor.yellow = 0;
-          rect.fillColor.black = 20;
-        } else if (acabadoV === "Blanco") {
-          rect.fillColor.cyan = 0;
-          rect.fillColor.magenta = 0;
-          rect.fillColor.yellow = 0;
-          rect.fillColor.black = 0;
-        } else if (acabadoV === "Marrón") {
-          rect.fillColor.black = 35;
-          rect.fillColor.cyan = 0;
-          rect.fillColor.magenta = 23;
-          rect.fillColor.yellow = 41;
+        if (rect.fillColor.blue) {
+          if (acabadoV === "Brillo") {
+            rect.fillColor.red = 188;
+            rect.fillColor.green = 198;
+            rect.fillColor.blue = 204;
+          } else if (acabadoV === "Blanco") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.red = 166;
+            rect.fillColor.green = 128;
+            rect.fillColor.blue = 98;
+          }
+        } else {
+          if (acabadoV === "Brillo") {
+            rect.fillColor.cyan = 8;
+            rect.fillColor.magenta = 3;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 20;
+          } else if (acabadoV === "Blanco") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.black = 35;
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 23;
+            rect.fillColor.yellow = 41;
+          }
         }
 
         // Access the color values inside the colorTitleBox
