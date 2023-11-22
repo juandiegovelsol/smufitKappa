@@ -108,6 +108,32 @@ okButton.onClick = function () {
       var destinationDoc = app.activeDocument;
       var symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
       var symbolCopy = symbolItem3.duplicate(destinationDoc);
+
+      //Positions ficha symbol
+      if (destinationDoc.height < 600) {
+        symbolCopy.position = [
+          symbolCopy.position[0] - 50,
+          symbolCopy.position[1] + 50,
+        ];
+      } else if (destinationDoc.height < 1000) {
+        symbolCopy.position = [
+          symbolCopy.position[0] - 100,
+          symbolCopy.position[1] + 100,
+        ];
+      } else {
+        symbolCopy.position = [
+          symbolCopy.position[0] - 150,
+          symbolCopy.position[1] + 150,
+        ];
+      }
+
+      // Scales ficha symbol according to destinationdoc heigth
+      var documentHeight = destinationDoc.height;
+      var originalSymbolHeight = symbolCopy.height;
+      var scaleFactor = documentHeight / originalSymbolHeight;
+      symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
+
+      //Brakes symbolCopy symbol to be edditable
       symbolCopy.breakLink();
 
       //Creates dialog window
