@@ -8,14 +8,10 @@ if (app.documents.length > 0) {
   thisDocument = app.documents.add();
 }
 
+/* var defaultDocumentDirection =
+  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"; */
 var defaultDocumentDirection =
-  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai";
-// Open the default document
-
-// Save a copy of the default document
-/* var newFilePath =
-  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/newdefault.ai";
-newDocument.saveAs(new File(newFilePath)); */
+  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/SmurfitKappa - Ficha.ai";
 
 // Create a dialog box with form fields
 var dialog = new Window("dialog", "Guias");
@@ -72,7 +68,7 @@ okButton.onClick = function () {
   if (checkbox1Value) {
     if (symbols.length > 0) {
       var insertionPoint = [50, 50];
-      var sourceSymbol = symbols["SmurfitKappa logo"];
+      var sourceSymbol = symbols["SmurfitKappa stacked"];
       app.activeDocument = thisDocument;
       var destinationDoc = app.activeDocument;
       var symbolItem = newDocument.symbolItems.add(sourceSymbol);
@@ -88,7 +84,7 @@ okButton.onClick = function () {
 
     if (symbols.length > 0) {
       var insertionPoint2 = [100, 100];
-      var sourceSymbol = symbols["Escuadra de registro"];
+      var sourceSymbol = symbols["SmurfitKappa stacked"];
       app.activeDocument = thisDocument;
       var destinationDoc = app.activeDocument;
       var symbolItem2 = newDocument.symbolItems.add(sourceSymbol);
@@ -101,41 +97,6 @@ okButton.onClick = function () {
 
   if (checkbox3Value) {
     if (symbols.length > 0) {
-      //Inserts ficha symbol
-
-      var sourceSymbol = symbols["FITXA"];
-      app.activeDocument = thisDocument;
-      var destinationDoc = app.activeDocument;
-      var symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
-      var symbolCopy = symbolItem3.duplicate(destinationDoc);
-
-      //Positions ficha symbol
-      if (destinationDoc.height < 600) {
-        symbolCopy.position = [
-          symbolCopy.position[0] - 50,
-          symbolCopy.position[1] + 50,
-        ];
-      } else if (destinationDoc.height < 1000) {
-        symbolCopy.position = [
-          symbolCopy.position[0] - 100,
-          symbolCopy.position[1] + 100,
-        ];
-      } else {
-        symbolCopy.position = [
-          symbolCopy.position[0] - 150,
-          symbolCopy.position[1] + 150,
-        ];
-      }
-
-      // Scales ficha symbol according to destinationdoc heigth
-      var documentHeight = destinationDoc.height;
-      var originalSymbolHeight = symbolCopy.height;
-      var scaleFactor = documentHeight / originalSymbolHeight;
-      symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
-
-      //Brakes symbolCopy symbol to be edditable
-      symbolCopy.breakLink();
-
       //Creates dialog window
       var fichaDialog = new Window("dialog", "Ficha");
       fichaDialog.alignChildren = ["left", "top"];
@@ -307,12 +268,7 @@ okButton.onClick = function () {
         } else {
           var textFrames1 = activeDocument.textFrames;
           textFrames1[position].selected = true;
-          if (position === 11) {
-            textFrames1[position].contents =
-              textFrames1[position].contents + " " + value;
-          } else {
-            textFrames1[position].contents = value;
-          }
+          textFrames1[position].contents = value;
         }
       }
 
@@ -344,6 +300,48 @@ okButton.onClick = function () {
         var porcentajeImpV = porcentajeImp.text;
         var selectedReference = referenceDropdown.selection.text;
         var currentDateV = getCurrentDate();
+
+        var sourceSymbol = null;
+        app.activeDocument = thisDocument;
+        var destinationDoc = app.activeDocument;
+        var symbolCopy = null;
+        var symbolItem3 = null;
+
+        if (flexoDigitalV === "Digital") {
+          sourceSymbol = symbols["FITXA DIGITAL 2"];
+        } else {
+          sourceSymbol = symbols["FITXA 2"];
+        }
+
+        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
+        symbolCopy = symbolItem3.duplicate(destinationDoc);
+
+        //Positions ficha symbol
+        if (destinationDoc.height < 600) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 50,
+            symbolCopy.position[1] - 4000,
+          ];
+        } else if (destinationDoc.height < 1000) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 100,
+            symbolCopy.position[1] - 4050,
+          ];
+        } else {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 150,
+            symbolCopy.position[1] - 4100,
+          ];
+        }
+
+        // Scales ficha symbol according to destinationdoc heigth
+        var documentHeight = destinationDoc.height;
+        var originalSymbolHeight = symbolCopy.height;
+        var scaleFactor = documentHeight / originalSymbolHeight;
+        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
+
+        //Brakes symbolCopy symbol to be edditable
+        symbolCopy.breakLink();
 
         //Inserts the background layer depending on user selection
         var targetDoc = app.activeDocument;
@@ -399,116 +397,171 @@ okButton.onClick = function () {
           }
         }
 
-        var textFrames = [
-          {
-            content: username,
-            id: "UserID",
-            x: -1135,
-            y: 1335,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 3,
-          },
-          {
-            content: flexoDigitalV,
-            id: "FlexoID",
-            x: -1100,
-            y: 1275,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 10,
-          },
-          {
-            content: acabadoV,
-            id: "AcabadoID",
-            x: -900,
-            y: 1275,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 12,
-          },
-          {
-            content: impresoraV,
-            id: "ImpID",
-            x: 693,
-            y: 1275,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 6,
-          },
-          {
-            content: canalV,
-            id: "CanalID",
-            x: 671,
-            y: 1210,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 11,
-          },
-          {
-            content: troquelV,
-            id: "TroquelID",
-            x: 1229,
-            y: 1335,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 0,
-          },
-          {
-            content: porcentajeImpV,
-            id: "%ImpID",
-            x: 977,
-            y: 1210,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 4,
-          },
-          {
-            content: selectedReference,
-            id: "ColorRefID",
-            x: -700,
-            y: 1275,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 7,
-          },
-          {
-            content: currentDateV,
-            id: "DateID",
-            x: 1195,
-            y: 1210,
-            r: 0,
-            g: 0,
-            b: 0,
-            position: 5,
-          },
-        ];
-
-        // Include color values in the text frames
-        for (var j = 0; j < colorValues.length; j++) {
-          var colors = colorValues[j].split(",");
-          var r = +colors[0];
-          var g = +colors[1];
-          var b = +colors[2];
-          var content = colors[3];
-          textFrames.push({
-            content: content,
-            id: "ColorID" + (j + 1),
-            x: j * 262.0762 - 1026,
-            y: 1210,
-            r: r,
-            g: g,
-            b: b,
-            position: 19 - j,
-          });
+        var textFrames = [];
+        if (flexoDigitalV === "Digital") {
+          textFrames = [
+            {
+              content: username,
+              id: "UserID",
+              x: -1135,
+              y: 1335,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 24,
+            },
+            {
+              content: acabadoV,
+              id: "AcabadoID",
+              x: -900,
+              y: 1275,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 25,
+            },
+            {
+              content: impresoraV,
+              id: "ImpID",
+              x: 693,
+              y: 1275,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 49,
+            },
+            {
+              content: canalV,
+              id: "CanalID",
+              x: 671,
+              y: 1210,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 56,
+            },
+            {
+              content: troquelV,
+              id: "TroquelID",
+              x: 1229,
+              y: 1335,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 54,
+            },
+            {
+              content: selectedReference,
+              id: "ColorRefID",
+              x: -700,
+              y: 1275,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 55,
+            },
+            {
+              content: currentDateV,
+              id: "DateID",
+              x: 1195,
+              y: 1210,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 22,
+            },
+          ];
+        } else {
+          textFrames = [
+            {
+              content: username,
+              id: "UserID",
+              x: -1135,
+              y: 1335,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 23,
+            },
+            {
+              content: impresoraV,
+              id: "ImpID",
+              x: 693,
+              y: 1275,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 45,
+            },
+            {
+              content: canalV,
+              id: "CanalID",
+              x: 671,
+              y: 1210,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 52,
+            },
+            {
+              content: troquelV,
+              id: "TroquelID",
+              x: 1229,
+              y: 1335,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 50,
+            },
+            {
+              content: porcentajeImpV,
+              id: "%ImpID",
+              x: 977,
+              y: 1210,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 43,
+            },
+            {
+              content: selectedReference,
+              id: "ColorRefID",
+              x: -700,
+              y: 1275,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 51,
+            },
+            {
+              content: currentDateV,
+              id: "DateID",
+              x: 1195,
+              y: 1210,
+              r: 0,
+              g: 0,
+              b: 0,
+              position: 21,
+            },
+          ];
+          // Include color values in the text frames
+          for (var j = 0; j < colorValues.length; j++) {
+            var colors = colorValues[j].split(",");
+            var r = +colors[0];
+            var g = +colors[1];
+            var b = +colors[2];
+            var content = colors[3];
+            textFrames.push({
+              content: content,
+              id: "ColorID" + (j + 1),
+              x: j * 262.0762 - 1026,
+              y: 1210,
+              r: r,
+              g: g,
+              b: b,
+              position: 18 - j,
+            });
+          }
         }
 
         //set te text size
@@ -516,21 +569,12 @@ okButton.onClick = function () {
 
         //Insert text frames
         for (var k = 0; k < textFrames.length; k++) {
-          if (textFrames[k].id === "TroquelID") {
-            createTextFrameWithId(
-              textFrames[k].content,
-              textFrames[k].id,
-              [textFrames[k].x, textFrames[k].y],
-              textSize,
-              textFrames[k].r,
-              textFrames[k].g,
-              textFrames[k].b
-            );
-          } else {
-            UpdateNow(textFrames[k].position, textFrames[k].content);
-          }
+          UpdateNow(textFrames[k].position, textFrames[k].content);
         }
-
+        /* var textFrames2 = activeDocument.textFrames;
+        for (var k = 0; k < textFrames2.length; k++) {
+          UpdateNow(k, k);
+        } */
         fichaDialog.close();
       };
 

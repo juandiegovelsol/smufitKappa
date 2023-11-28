@@ -1,6 +1,14 @@
 var thisDocument = app.activeDocument;
 var textFrames = thisDocument.textFrames;
 
+if (thisDocument.rulerUnits.toString().split(".")[1] !== "Millimeters") {
+  alert(
+    "Las unidades de este documento son: " +
+      thisDocument.rulerUnits.toString().split(".")[1] +
+      ", por favor recuerda cambiarlas a milímetros!"
+  );
+}
+
 var isDigital = false;
 for (var i = 0; i < textFrames.length; i++) {
   if (textFrames[i].contents === "Digital") {
