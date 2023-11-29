@@ -11,15 +11,17 @@ if (thisDocument.rulerUnits.toString().split(".")[1] !== "Millimeters") {
 
 var isDigital = false;
 for (var i = 0; i < textFrames.length; i++) {
-  if (textFrames[i].contents === "Digital") {
+  var content = textFrames[i].contents;
+  var regex = /Digital/;
+  if (regex.test(content)) {
     isDigital = true;
     break;
   }
 }
 
 if (isDigital) {
-  var docName = thisDocument.name;
-  var docPath = thisDocument.fullName;
+  var docName = decodeURI(thisDocument.name);
+  var docPath = decodeURI(thisDocument.fullName.parent);
 
   if (docName.charAt(0) !== "D" || docName.charAt(1) !== "P") {
     var newName = "DP" + docName;
