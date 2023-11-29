@@ -143,10 +143,10 @@ okButton.onClick = function () {
       var porcentajeImp = inputGroup2.add("edittext", undefined, "");
 
       // Title Box with Row-Aligned Text Inputs for Colors
-      var colorTitleBox = fichaDialog.add("panel");
+      /* var colorTitleBox = fichaDialog.add("panel");
       colorTitleBox.text = "Ingresar colores: ";
       colorTitleBox.orientation = "column";
-      colorTitleBox.alignChildren = ["left", "top"];
+      colorTitleBox.alignChildren = ["left", "top"]; */
 
       // Function to create a text frame with a custom ID property
       function createTextFrameWithId(content, id, position, textSize, r, g, b) {
@@ -163,75 +163,6 @@ okButton.onClick = function () {
 
         textFrame.textRange.characterAttributes.fillColor = newColor;
         return textFrame;
-      }
-
-      // Function to add a row of aligned text inputs for colors
-      function addColorRow(parent, labelText) {
-        var colorGroup = parent.add("group");
-        colorGroup.orientation = "row";
-        colorGroup.alignChildren = ["left", "center"];
-
-        colorGroup.add("statictext", undefined, labelText);
-        var colorEdit = colorGroup.add("edittext", undefined, "");
-        var colorButton = colorGroup.add(
-          "button",
-          undefined,
-          "Seleccionar RGB"
-        );
-
-        colorButton.onClick = function () {
-          var colorDialog = new Window("dialog", "Select RGB Color");
-          var colorGroupDialog = colorDialog.add("group");
-          colorGroupDialog.add("statictext", undefined, "R:");
-          var redInput = colorGroupDialog.add("edittext", undefined, "0");
-          colorGroupDialog.add("statictext", undefined, "G:");
-          var greenInput = colorGroupDialog.add("edittext", undefined, "0");
-          colorGroupDialog.add("statictext", undefined, "B:");
-          var blueInput = colorGroupDialog.add("edittext", undefined, "0");
-          colorGroupDialog.add("statictext", undefined, "Pantone:");
-          var pantoneInput = colorGroupDialog.add("edittext", undefined, "XX");
-
-          var okButton = colorDialog.add("button", undefined, "OK");
-          var cancelButton = colorDialog.add("button", undefined, "Cancelar");
-
-          okButton.onClick = function () {
-            var pantone = pantoneInput.text;
-            var red = parseInt(redInput.text);
-            var green = parseInt(greenInput.text);
-            var blue = parseInt(blueInput.text);
-
-            if (isNaN(red) || isNaN(green) || isNaN(blue)) {
-              alert("Ingresar un valor RGB válido");
-              return;
-            }
-
-            if (!pantone) {
-              alert("Ingresar un código Pantone válido");
-            }
-
-            if (
-              red < 0 ||
-              red > 255 ||
-              green < 0 ||
-              green > 255 ||
-              blue < 0 ||
-              blue > 255
-            ) {
-              alert("los valores RGB deben estar entre 0 to 255.");
-              return;
-            }
-
-            var rgbColor = [red, green, blue, pantone];
-            colorEdit.text = rgbColor.toString(); // Display the RGB color in the edit text field
-            colorDialog.close();
-          };
-
-          cancelButton.onClick = function () {
-            colorDialog.close();
-          };
-
-          colorDialog.show();
-        };
       }
 
       //Function to get current date in the format DD/MM/YY
@@ -272,12 +203,12 @@ okButton.onClick = function () {
         }
       }
 
-      addColorRow(colorTitleBox, "1:");
+      /* addColorRow(colorTitleBox, "1:");
       addColorRow(colorTitleBox, "2:");
       addColorRow(colorTitleBox, "3:");
       addColorRow(colorTitleBox, "4:");
       addColorRow(colorTitleBox, "5:");
-      addColorRow(colorTitleBox, "6:");
+      addColorRow(colorTitleBox, "6:"); */
 
       // Selectable Field for Color reference
       var referenceDropdownGroup = fichaDialog.add("group");
@@ -389,13 +320,13 @@ okButton.onClick = function () {
         }
 
         // Access the color values inside the colorTitleBox
-        var colorValues = [];
+        /* var colorValues = [];
         for (var i = 0; i < colorTitleBox.children.length; i++) {
           if (colorTitleBox.children[i] instanceof Group) {
             var colorInput = colorTitleBox.children[i].children[1].text;
             colorValues.push(colorInput);
           }
-        }
+        } */
 
         var textFrames = [];
         if (flexoDigitalV === "Digital") {
@@ -544,8 +475,131 @@ okButton.onClick = function () {
               position: 21,
             },
           ];
+
+          //Creates dialog window
+          var colorDialog = new Window("dialog", "Colores");
+          colorDialog.alignChildren = ["left", "top"];
+
+          var colorTitleBox = colorDialog.add("panel");
+          colorTitleBox.text = "Ingresar colores: ";
+          colorTitleBox.orientation = "column";
+          colorTitleBox.alignChildren = ["left", "top"];
+
+          // Function to add a row of aligned text inputs for colors
+          function addColorRow(parent, labelText) {
+            var colorGroup = parent.add("group");
+            colorGroup.orientation = "row";
+            colorGroup.alignChildren = ["left", "center"];
+
+            colorGroup.add("statictext", undefined, labelText);
+            var colorEdit = colorGroup.add("edittext", undefined, "");
+            var colorButton = colorGroup.add(
+              "button",
+              undefined,
+              "Seleccionar RGB"
+            );
+
+            colorButton.onClick = function () {
+              var colorDialog = new Window("dialog", "Select RGB Color");
+              var colorGroupDialog = colorDialog.add("group");
+              colorGroupDialog.add("statictext", undefined, "R:");
+              var redInput = colorGroupDialog.add("edittext", undefined, "0");
+              colorGroupDialog.add("statictext", undefined, "G:");
+              var greenInput = colorGroupDialog.add("edittext", undefined, "0");
+              colorGroupDialog.add("statictext", undefined, "B:");
+              var blueInput = colorGroupDialog.add("edittext", undefined, "0");
+              colorGroupDialog.add("statictext", undefined, "Pantone:");
+              var pantoneInput = colorGroupDialog.add(
+                "edittext",
+                undefined,
+                "XX"
+              );
+
+              var okButton = colorDialog.add("button", undefined, "OK");
+              var cancelButton = colorDialog.add(
+                "button",
+                undefined,
+                "Cancelar"
+              );
+
+              okButton.onClick = function () {
+                var pantone = pantoneInput.text;
+                var red = parseInt(redInput.text);
+                var green = parseInt(greenInput.text);
+                var blue = parseInt(blueInput.text);
+
+                if (isNaN(red) || isNaN(green) || isNaN(blue)) {
+                  alert("Ingresar un valor RGB válido");
+                  return;
+                }
+
+                if (!pantone) {
+                  alert("Ingresar un código Pantone válido");
+                }
+
+                if (
+                  red < 0 ||
+                  red > 255 ||
+                  green < 0 ||
+                  green > 255 ||
+                  blue < 0 ||
+                  blue > 255
+                ) {
+                  alert("los valores RGB deben estar entre 0 to 255.");
+                  return;
+                }
+
+                var rgbColor = [red, green, blue, pantone];
+                colorEdit.text = rgbColor.toString(); // Display the RGB color in the edit text field
+                colorDialog.close();
+              };
+
+              cancelButton.onClick = function () {
+                colorDialog.close();
+              };
+
+              colorDialog.show();
+            };
+          }
+
+          addColorRow(colorTitleBox, "1:");
+          addColorRow(colorTitleBox, "2:");
+          addColorRow(colorTitleBox, "3:");
+          addColorRow(colorTitleBox, "4:");
+          addColorRow(colorTitleBox, "5:");
+          addColorRow(colorTitleBox, "6:");
+
+          var colorsOKButton = colorDialog.add("button", undefined, "OK");
+          colorsOKButton.onClick = function () {
+            var colorValues = [];
+            for (var i = 0; i < colorTitleBox.children.length; i++) {
+              if (colorTitleBox.children[i] instanceof Group) {
+                var colorInput = colorTitleBox.children[i].children[1].text;
+                colorValues.push(colorInput);
+              }
+            }
+            for (var j = 0; j < colorValues.length; j++) {
+              var colors = colorValues[j].split(",");
+              var r = +colors[0];
+              var g = +colors[1];
+              var b = +colors[2];
+              var content = colors[3];
+              textFrames.push({
+                content: content,
+                id: "ColorID" + (j + 1),
+                x: j * 262.0762 - 1026,
+                y: 1210,
+                r: r,
+                g: g,
+                b: b,
+                position: 18 - j,
+              });
+            }
+            colorDialog.close();
+          };
+          colorDialog.show();
           // Include color values in the text frames
-          for (var j = 0; j < colorValues.length; j++) {
+          /* for (var j = 0; j < colorValues.length; j++) {
             var colors = colorValues[j].split(",");
             var r = +colors[0];
             var g = +colors[1];
@@ -561,7 +615,7 @@ okButton.onClick = function () {
               b: b,
               position: 18 - j,
             });
-          }
+          } */
         }
 
         //set te text size
@@ -571,6 +625,7 @@ okButton.onClick = function () {
         for (var k = 0; k < textFrames.length; k++) {
           UpdateNow(textFrames[k].position, textFrames[k].content);
         }
+
         /* var textFrames2 = activeDocument.textFrames;
         for (var k = 0; k < textFrames2.length; k++) {
           UpdateNow(k, k);
