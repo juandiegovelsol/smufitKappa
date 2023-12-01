@@ -187,6 +187,7 @@ okButton.onClick = function () {
       }
 
       function UpdateNow(position, value) {
+        app.activeDocument = thisDocument;
         if (AIversion == "10") {
           /* var textArtItems = activeDocument.textArtItems;
           for (var i = 0; i < textArtItems.length; i++) {
@@ -486,7 +487,7 @@ okButton.onClick = function () {
           colorTitleBox.alignChildren = ["left", "top"];
 
           // Function to add a row of aligned text inputs for colors
-          function addColorRow(parent, labelText) {
+          /* function addColorRow(parent, labelText) {
             var colorGroup = parent.add("group");
             colorGroup.orientation = "row";
             colorGroup.alignChildren = ["left", "center"];
@@ -560,14 +561,74 @@ okButton.onClick = function () {
 
               colorDialog.show();
             };
+          } */
+
+          // Access the color values inside the colorTitleBox
+
+          var filePath = new File(
+            "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated1.ai"
+          );
+          open(filePath, null);
+          var sourceDoc = app.activeDocument;
+
+          function addColorRow(parent, labelText, sourceDoc) {
+            var colorGroup = parent.add("group");
+            colorGroup.orientation = "row";
+            colorGroup.alignChildren = ["left", "center"];
+
+            colorGroup.add("statictext", undefined, labelText);
+            var colorEdit = colorGroup.add("edittext", undefined, "");
+            var colorButton = colorGroup.add(
+              "button",
+              undefined,
+              "Seleccionar RGB"
+            );
+
+            colorButton.onClick = function () {
+              var colorDialog = new Window("dialog", "Selecciona Pantone");
+              var colorGroupDialog = colorDialog.add("group");
+              colorGroupDialog.add("statictext", undefined, "Color:");
+              var pantoneDropdown = colorGroupDialog.add("dropdownlist");
+
+              // Populate dropdown list with Pantone colors from sourceDoc.swatches
+              for (var i = 0; i < sourceDoc.swatches.length; i++) {
+                var swatch = sourceDoc.swatches[i];
+                if (swatch.name.indexOf("PANTONE") !== -1) {
+                  pantoneDropdown.add("item", swatch.name);
+                }
+              }
+
+              var okButton = colorDialog.add("button", undefined, "OK");
+              var cancelButton = colorDialog.add(
+                "button",
+                undefined,
+                "Cancelar"
+              );
+
+              okButton.onClick = function () {
+                var selectedPantone = pantoneDropdown.selection;
+                if (!selectedPantone) {
+                  alert("Ingresar un código Pantone válido");
+                  return;
+                }
+                colorEdit.text = selectedPantone.text;
+                colorDialog.close();
+              };
+
+              cancelButton.onClick = function () {
+                colorDialog.close();
+              };
+
+              colorDialog.show();
+            };
           }
 
-          addColorRow(colorTitleBox, "1:");
-          addColorRow(colorTitleBox, "2:");
-          addColorRow(colorTitleBox, "3:");
-          addColorRow(colorTitleBox, "4:");
-          addColorRow(colorTitleBox, "5:");
-          addColorRow(colorTitleBox, "6:");
+          addColorRow(colorTitleBox, "1:", sourceDoc);
+          addColorRow(colorTitleBox, "2:", sourceDoc);
+          addColorRow(colorTitleBox, "3:", sourceDoc);
+          addColorRow(colorTitleBox, "4:", sourceDoc);
+          addColorRow(colorTitleBox, "5:", sourceDoc);
+          addColorRow(colorTitleBox, "6:", sourceDoc);
 
           var colorsOKButton = colorDialog.add("button", undefined, "OK");
           colorsOKButton.onClick = function () {
@@ -578,44 +639,23 @@ okButton.onClick = function () {
                 colorValues.push(colorInput);
               }
             }
+            // Include color values in the text frames
             for (var j = 0; j < colorValues.length; j++) {
-              var colors = colorValues[j].split(",");
-              var r = +colors[0];
-              var g = +colors[1];
-              var b = +colors[2];
-              var content = colors[3];
+              var content = colorValues[j];
               textFrames.push({
                 content: content,
                 id: "ColorID" + (j + 1),
                 x: j * 262.0762 - 1026,
                 y: 1210,
-                r: r,
-                g: g,
-                b: b,
+                r: 0,
+                g: 0,
+                b: 0,
                 position: 18 - j,
               });
             }
             colorDialog.close();
           };
           colorDialog.show();
-          // Include color values in the text frames
-          /* for (var j = 0; j < colorValues.length; j++) {
-            var colors = colorValues[j].split(",");
-            var r = +colors[0];
-            var g = +colors[1];
-            var b = +colors[2];
-            var content = colors[3];
-            textFrames.push({
-              content: content,
-              id: "ColorID" + (j + 1),
-              x: j * 262.0762 - 1026,
-              y: 1210,
-              r: r,
-              g: g,
-              b: b,
-              position: 18 - j,
-            });
-          } */
         }
 
         //set te text size
