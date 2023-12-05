@@ -110,8 +110,8 @@ okButton.onClick = function () {
       var listAcabado = fichaDialog.add("group");
       listAcabado.add("statictext", undefined, "Acabado: ");
       var acabado = listAcabado.add("dropdownlist");
-      acabado.add("item", "Brillo");
-      acabado.add("item", "Blanco");
+      acabado.add("item", "Blanco Estucado");
+      acabado.add("item", "Blanco Mate");
       acabado.add("item", "Marrón");
 
       var listImpresora = fichaDialog.add("group");
@@ -301,11 +301,11 @@ okButton.onClick = function () {
         );
 
         if (rect.fillColor.blue) {
-          if (acabadoV === "Brillo") {
-            rect.fillColor.red = 188;
-            rect.fillColor.green = 198;
-            rect.fillColor.blue = 204;
-          } else if (acabadoV === "Blanco") {
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Blanco Mate") {
             rect.fillColor.red = 255;
             rect.fillColor.green = 255;
             rect.fillColor.blue = 255;
@@ -315,12 +315,12 @@ okButton.onClick = function () {
             rect.fillColor.blue = 98;
           }
         } else {
-          if (acabadoV === "Brillo") {
-            rect.fillColor.cyan = 8;
-            rect.fillColor.magenta = 3;
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
             rect.fillColor.yellow = 0;
-            rect.fillColor.black = 20;
-          } else if (acabadoV === "Blanco") {
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Blanco Mate") {
             rect.fillColor.cyan = 0;
             rect.fillColor.magenta = 0;
             rect.fillColor.yellow = 0;
@@ -564,9 +564,21 @@ okButton.onClick = function () {
 
           // Access the color values inside the colorTitleBox
 
-          var filePath = new File(
-            "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated1.ai"
-          );
+          if (acabadoV === "Blanco Estucado") {
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_coated.ai"
+            );
+          } else if (acabadoV === "Blanco Mate") {
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
+            );
+          } else if (acabadoV === "Marrón") {
+            //Change this whit GCMI
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
+            );
+          }
+
           open(filePath, null);
           var sourceDoc = app.activeDocument;
 
@@ -584,7 +596,7 @@ okButton.onClick = function () {
             );
 
             colorButton.onClick = function () {
-              var colorDialog = new Window("dialog", "Selecciona Pantone");
+              var colorDialog = new Window("dialog", "Selecciona Color");
               var colorGroupDialog = colorDialog.add("group");
               colorGroupDialog.add("statictext", undefined, "Color:");
               var pantoneDropdown = colorGroupDialog.add("dropdownlist");
@@ -607,7 +619,7 @@ okButton.onClick = function () {
               okButton.onClick = function () {
                 var selectedPantone = pantoneDropdown.selection;
                 if (!selectedPantone) {
-                  alert("Ingresar un código Pantone válido");
+                  alert("Ingresar un código de color válido");
                   return;
                 }
                 colorEdit.text = selectedPantone.text;
