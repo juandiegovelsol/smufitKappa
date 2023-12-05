@@ -186,21 +186,34 @@ okButton.onClick = function () {
         return formattedDate;
       }
 
-      function UpdateNow(position, value) {
+      function UpdateNow(position, value, c, m, y, k) {
+        if (c === undefined) {
+          c = 0;
+        }
+        if (m === undefined) {
+          m = 0;
+        }
+        if (y === undefined) {
+          y = 0;
+        }
+        if (k === undefined) {
+          k = 0;
+        }
         app.activeDocument = thisDocument;
         if (AIversion == "10") {
-          /* var textArtItems = activeDocument.textArtItems;
-          for (var i = 0; i < textArtItems.length; i++) {
-            if (textArtItems[i].name.slice(0, 11) == "actualDate:") {
-              textArtItems[i].selected = true;
-              textArtItems[i].contents = currentDateV;
-            }
-          }
-          console.log(); */
         } else {
-          var textFrames1 = activeDocument.textFrames;
-          textFrames1[position].selected = true;
-          textFrames1[position].contents = value;
+          var textFrame1 = activeDocument.textFrames[position];
+          textFrame1.selected = true;
+          textFrame1.contents = value;
+
+          // Set the fill color of the text frame
+          /* textFrame1.layer.color.red = r;
+          textFrame1.layer.color.green = g;
+          textFrame1.layer.color.blue = b; */
+          textFrame1.textRange.characterAttributes.fillColor.cyan = c;
+          textFrame1.textRange.characterAttributes.fillColor.magenta = m;
+          textFrame1.textRange.characterAttributes.fillColor.yellow = y;
+          textFrame1.textRange.characterAttributes.fillColor.black = k;
         }
       }
 
@@ -335,71 +348,64 @@ okButton.onClick = function () {
             {
               content: username,
               id: "UserID",
-              x: -1135,
-              y: 1335,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 24,
             },
             {
               content: acabadoV,
               id: "AcabadoID",
-              x: -900,
-              y: 1275,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 25,
             },
             {
               content: impresoraV,
               id: "ImpID",
-              x: 693,
-              y: 1275,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 49,
             },
             {
               content: canalV,
               id: "CanalID",
-              x: 671,
-              y: 1210,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 56,
             },
             {
               content: troquelV,
               id: "TroquelID",
-              x: 1229,
-              y: 1335,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 54,
             },
             {
               content: selectedReference,
               id: "ColorRefID",
-              x: -700,
-              y: 1275,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 55,
             },
             {
               content: currentDateV,
               id: "DateID",
-              x: 1195,
-              y: 1210,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 22,
             },
           ];
@@ -408,71 +414,64 @@ okButton.onClick = function () {
             {
               content: username,
               id: "UserID",
-              x: -1135,
-              y: 1335,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 23,
             },
             {
               content: impresoraV,
               id: "ImpID",
-              x: 693,
-              y: 1275,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 45,
             },
             {
               content: canalV,
               id: "CanalID",
-              x: 671,
-              y: 1210,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 52,
             },
             {
               content: troquelV,
               id: "TroquelID",
-              x: 1229,
-              y: 1335,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 50,
             },
             {
               content: porcentajeImpV,
               id: "%ImpID",
-              x: 977,
-              y: 1210,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 43,
             },
             {
               content: selectedReference,
               id: "ColorRefID",
-              x: -700,
-              y: 1275,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 51,
             },
             {
               content: currentDateV,
               id: "DateID",
-              x: 1195,
-              y: 1210,
-              r: 0,
-              g: 0,
-              b: 0,
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
               position: 21,
             },
           ];
@@ -581,7 +580,7 @@ okButton.onClick = function () {
             var colorButton = colorGroup.add(
               "button",
               undefined,
-              "Seleccionar RGB"
+              "Seleccionar Color"
             );
 
             colorButton.onClick = function () {
@@ -635,21 +634,34 @@ okButton.onClick = function () {
             var colorValues = [];
             for (var i = 0; i < colorTitleBox.children.length; i++) {
               if (colorTitleBox.children[i] instanceof Group) {
-                var colorInput = colorTitleBox.children[i].children[1].text;
+                var colorInputText = colorTitleBox.children[i].children[1].text;
+                var thisColor =
+                  sourceDoc.swatches[colorInputText].color.spot.color;
+                var k = thisColor.black;
+                var c = thisColor.cyan;
+                var m = thisColor.magenta;
+                var y = thisColor.yellow;
+                var rgb = cmykToRgb(c, m, y, k);
+                var colorInput = {
+                  colorInputText: colorInputText,
+                  c: c,
+                  m: m,
+                  y: y,
+                  k: k,
+                };
                 colorValues.push(colorInput);
               }
             }
             // Include color values in the text frames
             for (var j = 0; j < colorValues.length; j++) {
-              var content = colorValues[j];
+              var content = colorValues[j].colorInputText;
               textFrames.push({
                 content: content,
                 id: "ColorID" + (j + 1),
-                x: j * 262.0762 - 1026,
-                y: 1210,
-                r: 0,
-                g: 0,
-                b: 0,
+                c: colorValues[j].c,
+                m: colorValues[j].m,
+                y: colorValues[j].y,
+                k: colorValues[j].k,
                 position: 18 - j,
               });
             }
@@ -663,7 +675,14 @@ okButton.onClick = function () {
 
         //Insert text frames
         for (var k = 0; k < textFrames.length; k++) {
-          UpdateNow(textFrames[k].position, textFrames[k].content);
+          UpdateNow(
+            textFrames[k].position,
+            textFrames[k].content,
+            textFrames[k].c,
+            textFrames[k].m,
+            textFrames[k].y,
+            textFrames[k].k
+          );
         }
 
         /* var textFrames2 = activeDocument.textFrames;
@@ -688,3 +707,19 @@ cancelButton.onClick = function () {
 };
 
 dialog.show();
+
+function cmykToRgb(c, m, y, k) {
+  var r, g, b;
+
+  // CMYK to RGB conversion
+  r = 255 * (1 - c / 100) * (1 - k / 100);
+  g = 255 * (1 - m / 100) * (1 - k / 100);
+  b = 255 * (1 - y / 100) * (1 - k / 100);
+
+  // Round values and return as an object
+  return {
+    red: Math.round(r),
+    green: Math.round(g),
+    blue: Math.round(b),
+  };
+}
