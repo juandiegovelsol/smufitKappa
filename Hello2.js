@@ -333,15 +333,6 @@ okButton.onClick = function () {
           }
         }
 
-        // Access the color values inside the colorTitleBox
-        /* var colorValues = [];
-        for (var i = 0; i < colorTitleBox.children.length; i++) {
-          if (colorTitleBox.children[i] instanceof Group) {
-            var colorInput = colorTitleBox.children[i].children[1].text;
-            colorValues.push(colorInput);
-          }
-        } */
-
         var textFrames = [];
         if (flexoDigitalV === "Digital") {
           textFrames = [
@@ -409,6 +400,83 @@ okButton.onClick = function () {
               position: 22,
             },
           ];
+
+          app.activeDocument = thisDocument;
+
+          var colors = {}; // Object to store CMYK color occurrences
+
+          // Iterate through page items
+          for (var i = 0; i < thisDocument.pageItems.length; i++) {
+            var currentItem = thisDocument.pageItems[i];
+
+            // Check if the item is a filled path (shape)
+            if (currentItem.typename === "PathItem" && currentItem.filled) {
+              // Get the CMYK color of the filled shape
+              var c = currentItem.fillColor.cyan;
+              var m = currentItem.fillColor.magenta;
+              var y = currentItem.fillColor.yellow;
+              var k = currentItem.fillColor.black;
+
+              if (
+                c !== undefined &&
+                m !== undefined &&
+                y !== undefined &&
+                k !== undefined
+              ) {
+                // Generate a key to store in the 'colors' object
+                var colorKey = c + "-" + m + "-" + y + "-" + k;
+
+                // Count the occurrence of each color
+                if (!colors[colorKey]) {
+                  colors[colorKey] = 1; // Initialize count
+                } else {
+                  colors[colorKey]++; // Increment count
+                }
+              }
+              var deletable = 0;
+            }
+          }
+
+          // Find the 6 most common CMYK colors
+          var sortedColors = [];
+          for (var key in colors) {
+            sortedColors.push({ key: key, count: colors[key] });
+          }
+
+          // Sort colors by occurrences
+          sortedColors.sort(function (a, b) {
+            return b.count - a.count;
+          });
+
+          // Get the 6 most common CMYK colors
+          var top6Colors = [];
+          for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
+            top6Colors.push(sortedColors[i].key);
+          }
+
+          // Display the top 6 CMYK colors
+          alert("Top 6 CMYK colors: " + top6Colors);
+
+          /* var hasShapes = false;
+
+          // Iterate through all page items in the document
+          for (var i = 0; i < thisDocument.pageItems.length; i++) {
+            var currentItem = thisDocument.pageItems[i];
+
+            // Check if the current item is a shape (rectangle, ellipse, or other paths)
+            if (currentItem.typename === "PathItem" && currentItem.filled) {
+              hasShapes = true;
+              break; // Exit the loop as soon as a shape is found
+            }
+          }
+
+          if (hasShapes) {
+            alert("Los colores serán detectados automáticamente");
+          } else {
+            alert(
+              "Este documento no tiene capas de color, los valores serán por defecto"
+            );
+          } */
         } else {
           textFrames = [
             {
@@ -485,84 +553,7 @@ okButton.onClick = function () {
           colorTitleBox.orientation = "column";
           colorTitleBox.alignChildren = ["left", "top"];
 
-          // Function to add a row of aligned text inputs for colors
-          /* function addColorRow(parent, labelText) {
-            var colorGroup = parent.add("group");
-            colorGroup.orientation = "row";
-            colorGroup.alignChildren = ["left", "center"];
-
-            colorGroup.add("statictext", undefined, labelText);
-            var colorEdit = colorGroup.add("edittext", undefined, "");
-            var colorButton = colorGroup.add(
-              "button",
-              undefined,
-              "Seleccionar RGB"
-            );
-
-            colorButton.onClick = function () {
-              var colorDialog = new Window("dialog", "Select RGB Color");
-              var colorGroupDialog = colorDialog.add("group");
-              colorGroupDialog.add("statictext", undefined, "R:");
-              var redInput = colorGroupDialog.add("edittext", undefined, "0");
-              colorGroupDialog.add("statictext", undefined, "G:");
-              var greenInput = colorGroupDialog.add("edittext", undefined, "0");
-              colorGroupDialog.add("statictext", undefined, "B:");
-              var blueInput = colorGroupDialog.add("edittext", undefined, "0");
-              colorGroupDialog.add("statictext", undefined, "Pantone:");
-              var pantoneInput = colorGroupDialog.add(
-                "edittext",
-                undefined,
-                "XX"
-              );
-
-              var okButton = colorDialog.add("button", undefined, "OK");
-              var cancelButton = colorDialog.add(
-                "button",
-                undefined,
-                "Cancelar"
-              );
-
-              okButton.onClick = function () {
-                var pantone = pantoneInput.text;
-                var red = parseInt(redInput.text);
-                var green = parseInt(greenInput.text);
-                var blue = parseInt(blueInput.text);
-
-                if (isNaN(red) || isNaN(green) || isNaN(blue)) {
-                  alert("Ingresar un valor RGB válido");
-                  return;
-                }
-
-                if (!pantone) {
-                  alert("Ingresar un código Pantone válido");
-                }
-
-                if (
-                  red < 0 ||
-                  red > 255 ||
-                  green < 0 ||
-                  green > 255 ||
-                  blue < 0 ||
-                  blue > 255
-                ) {
-                  alert("los valores RGB deben estar entre 0 to 255.");
-                  return;
-                }
-
-                var rgbColor = [red, green, blue, pantone];
-                colorEdit.text = rgbColor.toString(); // Display the RGB color in the edit text field
-                colorDialog.close();
-              };
-
-              cancelButton.onClick = function () {
-                colorDialog.close();
-              };
-
-              colorDialog.show();
-            };
-          } */
-
-          // Access the color values inside the colorTitleBox
+          // Depending on acabado value opens diferent library
 
           if (acabadoV === "Blanco Estucado") {
             var filePath = new File(
@@ -573,7 +564,7 @@ okButton.onClick = function () {
               "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
             );
           } else if (acabadoV === "Marrón") {
-            //Change this whit GCMI
+            //Change this whit GCMI library
             var filePath = new File(
               "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
             );
@@ -697,10 +688,6 @@ okButton.onClick = function () {
           );
         }
 
-        /* var textFrames2 = activeDocument.textFrames;
-        for (var k = 0; k < textFrames2.length; k++) {
-          UpdateNow(k, k);
-        } */
         fichaDialog.close();
       };
 
