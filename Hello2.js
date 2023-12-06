@@ -252,87 +252,6 @@ okButton.onClick = function () {
         var symbolCopy = null;
         var symbolItem3 = null;
 
-        if (flexoDigitalV === "Digital") {
-          sourceSymbol = symbols["FITXA DIGITAL 2"];
-        } else {
-          sourceSymbol = symbols["FITXA 2"];
-        }
-
-        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
-        symbolCopy = symbolItem3.duplicate(destinationDoc);
-
-        //Positions ficha symbol
-        if (destinationDoc.height < 600) {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 50,
-            symbolCopy.position[1] - 4000,
-          ];
-        } else if (destinationDoc.height < 1000) {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 100,
-            symbolCopy.position[1] - 4050,
-          ];
-        } else {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 150,
-            symbolCopy.position[1] - 4100,
-          ];
-        }
-
-        // Scales ficha symbol according to destinationdoc heigth
-        var documentHeight = destinationDoc.height;
-        var originalSymbolHeight = symbolCopy.height;
-        var scaleFactor = documentHeight / originalSymbolHeight;
-        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
-
-        //Brakes symbolCopy symbol to be edditable
-        symbolCopy.breakLink();
-
-        //Inserts the background layer depending on user selection
-        var targetDoc = app.activeDocument;
-
-        var background = targetDoc.layers.add();
-        background.zOrder(ZOrderMethod.SENDTOBACK);
-        var rect = background.pathItems.rectangle(
-          targetDoc.artboards[0].artboardRect[1],
-          0,
-          targetDoc.width,
-          targetDoc.height
-        );
-
-        if (rect.fillColor.blue) {
-          if (acabadoV === "Blanco Estucado") {
-            rect.fillColor.red = 255;
-            rect.fillColor.green = 255;
-            rect.fillColor.blue = 255;
-          } else if (acabadoV === "Blanco Mate") {
-            rect.fillColor.red = 255;
-            rect.fillColor.green = 255;
-            rect.fillColor.blue = 255;
-          } else if (acabadoV === "Marrón") {
-            rect.fillColor.red = 166;
-            rect.fillColor.green = 128;
-            rect.fillColor.blue = 98;
-          }
-        } else {
-          if (acabadoV === "Blanco Estucado") {
-            rect.fillColor.cyan = 0;
-            rect.fillColor.magenta = 0;
-            rect.fillColor.yellow = 0;
-            rect.fillColor.black = 0;
-          } else if (acabadoV === "Blanco Mate") {
-            rect.fillColor.cyan = 0;
-            rect.fillColor.magenta = 0;
-            rect.fillColor.yellow = 0;
-            rect.fillColor.black = 0;
-          } else if (acabadoV === "Marrón") {
-            rect.fillColor.black = 35;
-            rect.fillColor.cyan = 0;
-            rect.fillColor.magenta = 23;
-            rect.fillColor.yellow = 41;
-          }
-        }
-
         var textFrames = [];
         if (flexoDigitalV === "Digital") {
           textFrames = [
@@ -403,37 +322,41 @@ okButton.onClick = function () {
 
           app.activeDocument = thisDocument;
 
-          var colors = {}; // Object to store CMYK color occurrences
+          var colors = {};
 
           // Iterate through page items
           for (var i = 0; i < thisDocument.pageItems.length; i++) {
             var currentItem = thisDocument.pageItems[i];
 
-            // Check if the item is a filled path (shape)
+            // Check if the item is a filled path
             if (currentItem.typename === "PathItem" && currentItem.filled) {
-              // Get the CMYK color of the filled shape
-              var c = currentItem.fillColor.cyan;
-              var m = currentItem.fillColor.magenta;
-              var y = currentItem.fillColor.yellow;
-              var k = currentItem.fillColor.black;
-
+              if (currentItem.fillColor.cyan !== undefined) {
+                var c = currentItem.fillColor.cyan;
+                var m = currentItem.fillColor.magenta;
+                var y = currentItem.fillColor.yellow;
+                var k = currentItem.fillColor.black;
+              } else if (currentItem.fillColor.spot.color.cyan !== undefined) {
+                var c = currentItem.fillColor.spot.color.cyan;
+                var m = currentItem.fillColor.spot.color.magenta;
+                var y = currentItem.fillColor.spot.color.yellow;
+                var k = currentItem.fillColor.spot.color.black;
+              }
               if (
                 c !== undefined &&
                 m !== undefined &&
                 y !== undefined &&
                 k !== undefined
               ) {
-                // Generate a key to store in the 'colors' object
+                // Generate a key
                 var colorKey = c + "-" + m + "-" + y + "-" + k;
 
                 // Count the occurrence of each color
                 if (!colors[colorKey]) {
-                  colors[colorKey] = 1; // Initialize count
+                  colors[colorKey] = 1;
                 } else {
-                  colors[colorKey]++; // Increment count
+                  colors[colorKey]++;
                 }
               }
-              var deletable = 0;
             }
           }
 
@@ -451,32 +374,13 @@ okButton.onClick = function () {
           // Get the 6 most common CMYK colors
           var top6Colors = [];
           for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
-            top6Colors.push(sortedColors[i].key);
+            top6Colors.push(
+              "Q: " + sortedColors[i].count + "C: " + sortedColors[i].key
+            );
           }
 
           // Display the top 6 CMYK colors
           alert("Top 6 CMYK colors: " + top6Colors);
-
-          /* var hasShapes = false;
-
-          // Iterate through all page items in the document
-          for (var i = 0; i < thisDocument.pageItems.length; i++) {
-            var currentItem = thisDocument.pageItems[i];
-
-            // Check if the current item is a shape (rectangle, ellipse, or other paths)
-            if (currentItem.typename === "PathItem" && currentItem.filled) {
-              hasShapes = true;
-              break; // Exit the loop as soon as a shape is found
-            }
-          }
-
-          if (hasShapes) {
-            alert("Los colores serán detectados automáticamente");
-          } else {
-            alert(
-              "Este documento no tiene capas de color, los valores serán por defecto"
-            );
-          } */
         } else {
           textFrames = [
             {
@@ -671,6 +575,87 @@ okButton.onClick = function () {
             colorDialog.close();
           };
           colorDialog.show();
+        }
+
+        if (flexoDigitalV === "Digital") {
+          sourceSymbol = symbols["FITXA DIGITAL 2"];
+        } else {
+          sourceSymbol = symbols["FITXA 2"];
+        }
+
+        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
+        symbolCopy = symbolItem3.duplicate(destinationDoc);
+
+        //Positions ficha symbol
+        if (destinationDoc.height < 600) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 50,
+            symbolCopy.position[1] - 4000,
+          ];
+        } else if (destinationDoc.height < 1000) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 100,
+            symbolCopy.position[1] - 4050,
+          ];
+        } else {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 150,
+            symbolCopy.position[1] - 4100,
+          ];
+        }
+
+        // Scales ficha symbol according to destinationdoc heigth
+        var documentHeight = destinationDoc.height;
+        var originalSymbolHeight = symbolCopy.height;
+        var scaleFactor = documentHeight / originalSymbolHeight;
+        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
+
+        //Brakes symbolCopy symbol to be edditable
+        symbolCopy.breakLink();
+
+        //Inserts the background layer depending on user selection
+        var targetDoc = app.activeDocument;
+
+        var background = targetDoc.layers.add();
+        background.zOrder(ZOrderMethod.SENDTOBACK);
+        var rect = background.pathItems.rectangle(
+          targetDoc.artboards[0].artboardRect[1],
+          0,
+          targetDoc.width,
+          targetDoc.height
+        );
+
+        if (rect.fillColor.blue) {
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Blanco Mate") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.red = 166;
+            rect.fillColor.green = 128;
+            rect.fillColor.blue = 98;
+          }
+        } else {
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Blanco Mate") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.black = 35;
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 23;
+            rect.fillColor.yellow = 41;
+          }
         }
 
         //set te text size
