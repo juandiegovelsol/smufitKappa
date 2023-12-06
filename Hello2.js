@@ -1,14 +1,17 @@
-// Open the default document
-var newDocument = app.open(
-  File(
-    "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"
-  )
-);
+var AIversion = version.slice(0, 2);
 
-// Save a copy of the default document
-var newFilePath =
-  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/newdefault.ai";
-newDocument.saveAs(new File(newFilePath));
+var thisDocument = null;
+
+if (app.documents.length > 0) {
+  thisDocument = app.activeDocument;
+} else {
+  thisDocument = app.documents.add();
+}
+
+/* var defaultDocumentDirection =
+  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"; */
+var defaultDocumentDirection =
+  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/SmurfitKappa - Ficha.ai";
 
 // Create a dialog box with form fields
 var dialog = new Window("dialog", "Guias");
@@ -59,14 +62,18 @@ okButton.onClick = function () {
     username = $.getenv("USER");
   }
 
+  var newDocument = app.open(File(defaultDocumentDirection));
   var symbols = app.activeDocument.symbols;
 
   if (checkbox1Value) {
-    //var symbols = app.activeDocument.symbols;
     if (symbols.length > 0) {
-      var insertionPoint = [50, 750];
-      var symbolItem = app.activeDocument.symbolItems.add(symbols[4]);
-      symbolItem.position = insertionPoint;
+      var insertionPoint = [50, 50];
+      var sourceSymbol = symbols["SmurfitKappa stacked"];
+      app.activeDocument = thisDocument;
+      var destinationDoc = app.activeDocument;
+      var symbolItem = newDocument.symbolItems.add(sourceSymbol);
+      var symbolCopy = symbolItem.duplicate(destinationDoc);
+      symbolCopy.position = insertionPoint;
     } else {
       alert("No symbols found in the current document.");
     }
@@ -74,11 +81,15 @@ okButton.onClick = function () {
 
   if (checkbox2Value) {
     //Inserts Escuadra
-    //var symbols2 = app.activeDocument.symbols;
+
     if (symbols.length > 0) {
-      var insertionPoint2 = [500, 100];
-      var symbolItem2 = app.activeDocument.symbolItems.add(symbols[6]);
-      symbolItem2.position = insertionPoint2;
+      var insertionPoint2 = [100, 100];
+      var sourceSymbol = symbols["SmurfitKappa stacked"];
+      app.activeDocument = thisDocument;
+      var destinationDoc = app.activeDocument;
+      var symbolItem2 = newDocument.symbolItems.add(sourceSymbol);
+      var symbolCopy = symbolItem2.duplicate(destinationDoc);
+      symbolCopy.position = insertionPoint2;
     } else {
       alert("No symbols found in the current document.");
     }
@@ -86,12 +97,6 @@ okButton.onClick = function () {
 
   if (checkbox3Value) {
     if (symbols.length > 0) {
-      //Inserts ficha symbol
-
-      var symbolItem3 = app.activeDocument.symbolItems.add(symbols[0]);
-      var insertionPoint3 = [0 - 1391, 1598];
-      symbolItem3.position = insertionPoint3;
-
       //Creates dialog window
       var fichaDialog = new Window("dialog", "Ficha");
       fichaDialog.alignChildren = ["left", "top"];
@@ -105,8 +110,8 @@ okButton.onClick = function () {
       var listAcabado = fichaDialog.add("group");
       listAcabado.add("statictext", undefined, "Acabado: ");
       var acabado = listAcabado.add("dropdownlist");
-      acabado.add("item", "Brillo");
-      acabado.add("item", "Blanco");
+      acabado.add("item", "Blanco Estucado");
+      acabado.add("item", "Blanco Mate");
       acabado.add("item", "Marrón");
 
       var listImpresora = fichaDialog.add("group");
@@ -138,29 +143,26 @@ okButton.onClick = function () {
       var porcentajeImp = inputGroup2.add("edittext", undefined, "");
 
       // Title Box with Row-Aligned Text Inputs for Colors
-      var colorTitleBox = fichaDialog.add("panel");
+      /* var colorTitleBox = fichaDialog.add("panel");
       colorTitleBox.text = "Ingresar colores: ";
       colorTitleBox.orientation = "column";
-      colorTitleBox.alignChildren = ["left", "top"];
+      colorTitleBox.alignChildren = ["left", "top"]; */
 
       // Function to create a text frame with a custom ID property
-      function createTextFrameWithId(content, id, position, textSize) {
+      function createTextFrameWithId(content, id, position, textSize, r, g, b) {
         var textFrame = newDocument.textFrames.add();
         textFrame.contents = content;
         textFrame.position = position;
         textFrame.customId = id;
         textFrame.textRange.characterAttributes.size = textSize;
+
+        var newColor = new RGBColor();
+        newColor.red = r; // Replace with your desired RGB values
+        newColor.green = g;
+        newColor.blue = b;
+
+        textFrame.textRange.characterAttributes.fillColor = newColor;
         return textFrame;
-      }
-
-      // Function to add a row of aligned text inputs for colors
-      function addColorRow(parent, labelText) {
-        var colorGroup = parent.add("group");
-        colorGroup.orientation = "row";
-        colorGroup.alignChildren = ["left", "center"];
-
-        colorGroup.add("statictext", undefined, labelText);
-        colorGroup.add("edittext", undefined, "");
       }
 
       //Function to get current date in the format DD/MM/YY
@@ -184,12 +186,43 @@ okButton.onClick = function () {
         return formattedDate;
       }
 
-      addColorRow(colorTitleBox, "1:");
+      function UpdateNow(position, value, c, m, y, k) {
+        if (c === undefined) {
+          c = 0;
+        }
+        if (m === undefined) {
+          m = 0;
+        }
+        if (y === undefined) {
+          y = 0;
+        }
+        if (k === undefined) {
+          k = 0;
+        }
+        app.activeDocument = thisDocument;
+        if (AIversion == "10") {
+        } else {
+          var textFrame1 = activeDocument.textFrames[position];
+          textFrame1.selected = true;
+          textFrame1.contents = value;
+
+          // Set the fill color of the text frame
+          /* textFrame1.layer.color.red = r;
+          textFrame1.layer.color.green = g;
+          textFrame1.layer.color.blue = b; */
+          textFrame1.textRange.characterAttributes.fillColor.cyan = c;
+          textFrame1.textRange.characterAttributes.fillColor.magenta = m;
+          textFrame1.textRange.characterAttributes.fillColor.yellow = y;
+          textFrame1.textRange.characterAttributes.fillColor.black = k;
+        }
+      }
+
+      /* addColorRow(colorTitleBox, "1:");
       addColorRow(colorTitleBox, "2:");
       addColorRow(colorTitleBox, "3:");
       addColorRow(colorTitleBox, "4:");
       addColorRow(colorTitleBox, "5:");
-      addColorRow(colorTitleBox, "6:");
+      addColorRow(colorTitleBox, "6:"); */
 
       // Selectable Field for Color reference
       var referenceDropdownGroup = fichaDialog.add("group");
@@ -213,46 +246,430 @@ okButton.onClick = function () {
         var selectedReference = referenceDropdown.selection.text;
         var currentDateV = getCurrentDate();
 
-        // Access the color values inside the colorTitleBox
-        var colorValues = [];
-        for (var i = 0; i < colorTitleBox.children.length; i++) {
-          if (colorTitleBox.children[i] instanceof Group) {
-            var colorInput = colorTitleBox.children[i].children[1].text;
-            colorValues.push(colorInput);
+        var sourceSymbol = null;
+        app.activeDocument = thisDocument;
+        var destinationDoc = app.activeDocument;
+        var symbolCopy = null;
+        var symbolItem3 = null;
+
+        var textFrames = [];
+        if (flexoDigitalV === "Digital") {
+          textFrames = [
+            {
+              content: username,
+              id: "UserID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 24,
+            },
+            {
+              content: acabadoV,
+              id: "AcabadoID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 25,
+            },
+            {
+              content: impresoraV,
+              id: "ImpID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 49,
+            },
+            {
+              content: canalV,
+              id: "CanalID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 56,
+            },
+            {
+              content: troquelV,
+              id: "TroquelID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 54,
+            },
+            {
+              content: selectedReference,
+              id: "ColorRefID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 55,
+            },
+            {
+              content: currentDateV,
+              id: "DateID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 22,
+            },
+          ];
+
+          app.activeDocument = thisDocument;
+
+          var colors = {};
+
+          // Iterate through page items
+          for (var i = 0; i < thisDocument.pageItems.length; i++) {
+            var currentItem = thisDocument.pageItems[i];
+
+            // Check if the item is a filled path
+            if (currentItem.typename === "PathItem" && currentItem.filled) {
+              if (currentItem.fillColor.cyan !== undefined) {
+                var c = currentItem.fillColor.cyan;
+                var m = currentItem.fillColor.magenta;
+                var y = currentItem.fillColor.yellow;
+                var k = currentItem.fillColor.black;
+              } else if (currentItem.fillColor.spot.color.cyan !== undefined) {
+                var c = currentItem.fillColor.spot.color.cyan;
+                var m = currentItem.fillColor.spot.color.magenta;
+                var y = currentItem.fillColor.spot.color.yellow;
+                var k = currentItem.fillColor.spot.color.black;
+              }
+              if (
+                c !== undefined &&
+                m !== undefined &&
+                y !== undefined &&
+                k !== undefined
+              ) {
+                // Generate a key
+                var colorKey = c + "-" + m + "-" + y + "-" + k;
+
+                // Count the occurrence of each color
+                if (!colors[colorKey]) {
+                  colors[colorKey] = 1;
+                } else {
+                  colors[colorKey]++;
+                }
+              }
+            }
           }
+
+          // Find the 6 most common CMYK colors
+          var sortedColors = [];
+          for (var key in colors) {
+            sortedColors.push({ key: key, count: colors[key] });
+          }
+
+          // Sort colors by occurrences
+          sortedColors.sort(function (a, b) {
+            return b.count - a.count;
+          });
+
+          // Get the 6 most common CMYK colors
+          var top6Colors = [];
+          for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
+            top6Colors.push(
+              "Q: " + sortedColors[i].count + "C: " + sortedColors[i].key
+            );
+          }
+
+          // Display the top 6 CMYK colors
+          alert("Top 6 CMYK colors: " + top6Colors);
+        } else {
+          textFrames = [
+            {
+              content: username,
+              id: "UserID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 23,
+            },
+            {
+              content: impresoraV,
+              id: "ImpID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 45,
+            },
+            {
+              content: canalV,
+              id: "CanalID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 52,
+            },
+            {
+              content: troquelV,
+              id: "TroquelID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 50,
+            },
+            {
+              content: porcentajeImpV,
+              id: "%ImpID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 43,
+            },
+            {
+              content: selectedReference,
+              id: "ColorRefID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 51,
+            },
+            {
+              content: currentDateV,
+              id: "DateID",
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 0,
+              position: 21,
+            },
+          ];
+
+          //Creates dialog window
+          var colorDialog = new Window("dialog", "Colores");
+          colorDialog.alignChildren = ["left", "top"];
+
+          var colorTitleBox = colorDialog.add("panel");
+          colorTitleBox.text = "Ingresar colores: ";
+          colorTitleBox.orientation = "column";
+          colorTitleBox.alignChildren = ["left", "top"];
+
+          // Depending on acabado value opens diferent library
+
+          if (acabadoV === "Blanco Estucado") {
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_coated.ai"
+            );
+          } else if (acabadoV === "Blanco Mate") {
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
+            );
+          } else if (acabadoV === "Marrón") {
+            //Change this whit GCMI library
+            var filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
+            );
+          }
+
+          open(filePath, null);
+          var sourceDoc = app.activeDocument;
+
+          function addColorRow(parent, labelText, sourceDoc) {
+            var colorGroup = parent.add("group");
+            colorGroup.orientation = "row";
+            colorGroup.alignChildren = ["left", "center"];
+
+            colorGroup.add("statictext", undefined, labelText);
+            var colorEdit = colorGroup.add("edittext", undefined, "");
+            var colorButton = colorGroup.add(
+              "button",
+              undefined,
+              "Seleccionar Color"
+            );
+
+            colorButton.onClick = function () {
+              var colorDialog = new Window("dialog", "Selecciona Color");
+              var colorGroupDialog = colorDialog.add("group");
+              colorGroupDialog.add("statictext", undefined, "Color:");
+              var pantoneDropdown = colorGroupDialog.add("dropdownlist");
+
+              // Populate dropdown list with Pantone colors from sourceDoc.swatches
+              for (var i = 0; i < sourceDoc.swatches.length; i++) {
+                var swatch = sourceDoc.swatches[i];
+                if (swatch.name.indexOf("PANTONE") !== -1) {
+                  pantoneDropdown.add("item", swatch.name);
+                }
+              }
+
+              var okButton = colorDialog.add("button", undefined, "OK");
+              var cancelButton = colorDialog.add(
+                "button",
+                undefined,
+                "Cancelar"
+              );
+
+              okButton.onClick = function () {
+                var selectedPantone = pantoneDropdown.selection;
+                if (!selectedPantone) {
+                  alert("Ingresar un código de color válido");
+                  return;
+                }
+                colorEdit.text = selectedPantone.text;
+                colorDialog.close();
+              };
+
+              cancelButton.onClick = function () {
+                colorDialog.close();
+              };
+
+              colorDialog.show();
+            };
+          }
+
+          addColorRow(colorTitleBox, "1:", sourceDoc);
+          addColorRow(colorTitleBox, "2:", sourceDoc);
+          addColorRow(colorTitleBox, "3:", sourceDoc);
+          addColorRow(colorTitleBox, "4:", sourceDoc);
+          addColorRow(colorTitleBox, "5:", sourceDoc);
+          addColorRow(colorTitleBox, "6:", sourceDoc);
+
+          var colorsOKButton = colorDialog.add("button", undefined, "OK");
+          colorsOKButton.onClick = function () {
+            var colorValues = [];
+            for (var i = 0; i < colorTitleBox.children.length; i++) {
+              if (colorTitleBox.children[i] instanceof Group) {
+                var colorInputText = colorTitleBox.children[i].children[1].text;
+                var thisColor =
+                  sourceDoc.swatches[colorInputText].color.spot.color;
+                var k = thisColor.black;
+                var c = thisColor.cyan;
+                var m = thisColor.magenta;
+                var y = thisColor.yellow;
+                var rgb = cmykToRgb(c, m, y, k);
+                var colorInput = {
+                  colorInputText: colorInputText,
+                  c: c,
+                  m: m,
+                  y: y,
+                  k: k,
+                };
+                colorValues.push(colorInput);
+              }
+            }
+            // Include color values in the text frames
+            for (var j = 0; j < colorValues.length; j++) {
+              var content = colorValues[j].colorInputText;
+              textFrames.push({
+                content: content,
+                id: "ColorID" + (j + 1),
+                c: colorValues[j].c,
+                m: colorValues[j].m,
+                y: colorValues[j].y,
+                k: colorValues[j].k,
+                position: 18 - j,
+              });
+            }
+            colorDialog.close();
+          };
+          colorDialog.show();
         }
 
-        var textFrames = [
-          { content: username, id: "UserID", x: -1135, y: 1335 },
-          { content: flexoDigitalV, id: "FlexoID", x: -1100, y: 1275 },
-          { content: acabadoV, id: "AcabadoID", x: -900, y: 1275 },
-          { content: impresoraV, id: "ImpID", x: 693, y: 1275 },
-          { content: canalV, id: "CanalID", x: 671, y: 1210 },
-          { content: troquelV, id: "TroquelID", x: 1229, y: 1335 },
-          { content: porcentajeImpV, id: "%ImpID", x: 977, y: 1210 },
-          { content: selectedReference, id: "ColorRefID", x: -700, y: 1275 },
-          { content: currentDateV, id: "DateID", x: 1195, y: 1210 },
-        ];
+        if (flexoDigitalV === "Digital") {
+          sourceSymbol = symbols["FITXA DIGITAL 2"];
+        } else {
+          sourceSymbol = symbols["FITXA 2"];
+        }
 
-        // Include color values in the text frames
-        for (var j = 0; j < colorValues.length; j++) {
-          textFrames.push({
-            content: colorValues[j],
-            id: "ColorID" + (j + 1),
-            x: j * 262.0762 - 1026,
-            y: 1210,
-          });
+        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
+        symbolCopy = symbolItem3.duplicate(destinationDoc);
+
+        //Positions ficha symbol
+        if (destinationDoc.height < 600) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 50,
+            symbolCopy.position[1] - 4000,
+          ];
+        } else if (destinationDoc.height < 1000) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 100,
+            symbolCopy.position[1] - 4050,
+          ];
+        } else {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 150,
+            symbolCopy.position[1] - 4100,
+          ];
+        }
+
+        // Scales ficha symbol according to destinationdoc heigth
+        var documentHeight = destinationDoc.height;
+        var originalSymbolHeight = symbolCopy.height;
+        var scaleFactor = documentHeight / originalSymbolHeight;
+        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
+
+        //Brakes symbolCopy symbol to be edditable
+        symbolCopy.breakLink();
+
+        //Inserts the background layer depending on user selection
+        var targetDoc = app.activeDocument;
+
+        var background = targetDoc.layers.add();
+        background.zOrder(ZOrderMethod.SENDTOBACK);
+        var rect = background.pathItems.rectangle(
+          targetDoc.artboards[0].artboardRect[1],
+          0,
+          targetDoc.width,
+          targetDoc.height
+        );
+
+        if (rect.fillColor.blue) {
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Blanco Mate") {
+            rect.fillColor.red = 255;
+            rect.fillColor.green = 255;
+            rect.fillColor.blue = 255;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.red = 166;
+            rect.fillColor.green = 128;
+            rect.fillColor.blue = 98;
+          }
+        } else {
+          if (acabadoV === "Blanco Estucado") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Blanco Mate") {
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 0;
+            rect.fillColor.yellow = 0;
+            rect.fillColor.black = 0;
+          } else if (acabadoV === "Marrón") {
+            rect.fillColor.black = 35;
+            rect.fillColor.cyan = 0;
+            rect.fillColor.magenta = 23;
+            rect.fillColor.yellow = 41;
+          }
         }
 
         //set te text size
         var textSize = 50;
 
+        //Insert text frames
         for (var k = 0; k < textFrames.length; k++) {
-          createTextFrameWithId(
-            textFrames[k].content, //+ " (" + textFrames[k].id + ")",
-            textFrames[k].id,
-            [textFrames[k].x, textFrames[k].y],
-            textSize
+          UpdateNow(
+            textFrames[k].position,
+            textFrames[k].content,
+            textFrames[k].c,
+            textFrames[k].m,
+            textFrames[k].y,
+            textFrames[k].k
           );
         }
 
@@ -265,6 +682,7 @@ okButton.onClick = function () {
     }
   }
 
+  newDocument.close(SaveOptions.DONOTSAVECHANGES);
   dialog.close();
 };
 
@@ -273,3 +691,19 @@ cancelButton.onClick = function () {
 };
 
 dialog.show();
+
+function cmykToRgb(c, m, y, k) {
+  var r, g, b;
+
+  // CMYK to RGB conversion
+  r = 255 * (1 - c / 100) * (1 - k / 100);
+  g = 255 * (1 - m / 100) * (1 - k / 100);
+  b = 255 * (1 - y / 100) * (1 - k / 100);
+
+  // Round values and return as an object
+  return {
+    red: Math.round(r),
+    green: Math.round(g),
+    blue: Math.round(b),
+  };
+}
