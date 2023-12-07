@@ -348,7 +348,7 @@ okButton.onClick = function () {
                 k !== undefined
               ) {
                 // Generate a key
-                var colorKey = c + "-" + m + "-" + y + "-" + k;
+                var colorKey = c + "," + m + "," + y + "," + k;
 
                 // Count the occurrence of each color
                 if (!colors[colorKey]) {
@@ -372,15 +372,45 @@ okButton.onClick = function () {
           });
 
           // Get the 6 most common CMYK colors
-          var top6Colors = [];
+          /* var top6Colors = []; */
+
+          //CONTINUE HERE INTEGER PART IS NOT WORKING
+
+          var top6ColorsC = [];
           for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
-            top6Colors.push(
+            var color = sortedColors[i].key.split(",");
+            for (var j = 0; j < thisDocument.swatches.length; j++) {
+              var swatch = thisDocument.swatches[j];
+              if (swatch.color.typename === "CMYKColor") {
+                alert(
+                  integerPart(color[0]) +
+                    integerPart(swatch.color.cyan) +
+                    integerPart(color[1]) +
+                    integerPart(swatch.color.magenta) +
+                    integerPart(color[2]) +
+                    integerPart(swatch.color.yellow) +
+                    integerPart(color[4]) +
+                    integerPart(swatch.color.black)
+                );
+                /* if (
+                  integerPart(color[0].toString) ===
+                    integerPart(swatch.color.cyan) &&
+                  integerPart(color[1]) === integerPart(swatch.color.magenta) &&
+                  integerPart(color[2]) === integerPart(swatch.color.yellow) &&
+                  integerPart(color[4]) === integerPart(swatch.color.black)
+                ) {
+                  alert(swatch.name);
+                } */
+              }
+            }
+            /* top6Colors.push(
               "Q: " + sortedColors[i].count + "C: " + sortedColors[i].key
-            );
+            ); */
+            top6ColorsC.push(color);
           }
 
           // Display the top 6 CMYK colors
-          alert("Top 6 CMYK colors: " + top6Colors);
+          alert("Top 6 CMYK colors: " + top6ColorsC);
         } else {
           textFrames = [
             {
@@ -658,6 +688,22 @@ okButton.onClick = function () {
           }
         }
 
+        var colorIndex = 1;
+        // Iterate through page items to identify the color rectangles
+        for (var i = 0; i < thisDocument.pageItems.length; i++) {
+          var currentItem = thisDocument.pageItems[i];
+
+          // Check if the item has name color
+          if (currentItem.name.indexOf("color") !== -1) {
+            var color = top6ColorsC[6 - colorIndex];
+            currentItem.fillColor.cyan = color[0];
+            currentItem.fillColor.magenta = color[1];
+            currentItem.fillColor.yellow = color[2];
+            currentItem.fillColor.black = color[3];
+            colorIndex++;
+          }
+        }
+
         //set te text size
         var textSize = 50;
 
@@ -706,4 +752,13 @@ function cmykToRgb(c, m, y, k) {
     green: Math.round(g),
     blue: Math.round(b),
   };
+}
+
+function integerPart(number) {
+  const numberString = number.toString();
+  const dotIndex = numberString.indexOf(".");
+  if (dotIndex !== -1) {
+    return parseInt(numberString.substring(0, dotIndex), 10);
+  }
+  return parseInt(numberString, 10);
 }
