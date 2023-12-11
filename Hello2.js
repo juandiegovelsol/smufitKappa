@@ -379,38 +379,66 @@ okButton.onClick = function () {
           var top6ColorsC = [];
           for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
             var color = sortedColors[i].key.split(",");
+            var name = "";
             for (var j = 0; j < thisDocument.swatches.length; j++) {
               var swatch = thisDocument.swatches[j];
               if (swatch.color.typename === "CMYKColor") {
-                alert(
-                  integerPart(color[0]) +
-                    integerPart(swatch.color.cyan) +
-                    integerPart(color[1]) +
-                    integerPart(swatch.color.magenta) +
-                    integerPart(color[2]) +
-                    integerPart(swatch.color.yellow) +
-                    integerPart(color[4]) +
-                    integerPart(swatch.color.black)
-                );
-                /* if (
-                  integerPart(color[0].toString) ===
-                    integerPart(swatch.color.cyan) &&
-                  integerPart(color[1]) === integerPart(swatch.color.magenta) &&
-                  integerPart(color[2]) === integerPart(swatch.color.yellow) &&
-                  integerPart(color[4]) === integerPart(swatch.color.black)
+                var color1 = Math.floor(color[0]);
+                var color2 = Math.floor(swatch.color.cyan);
+                var color3 = Math.floor(color[1]);
+                var color4 = Math.floor(swatch.color.magenta);
+                var color5 = Math.floor(color[2]);
+                var color6 = Math.floor(swatch.color.yellow);
+                var color7 = Math.floor(color[3]);
+                var color8 = Math.floor(swatch.color.black);
+                if (
+                  color1 === color2 &&
+                  color3 === color4 &&
+                  color5 === color6 &&
+                  color7 === color8
                 ) {
-                  alert(swatch.name);
-                } */
+                  name = swatch.name;
+                }
               }
             }
             /* top6Colors.push(
               "Q: " + sortedColors[i].count + "C: " + sortedColors[i].key
             ); */
-            top6ColorsC.push(color);
+            top6ColorsC.push({ color: color, name: name });
           }
-
+          //Update colors position:
+          top6ColorsC[0].position = 19;
+          top6ColorsC[1].position = 15;
+          top6ColorsC[2].position = 14;
+          top6ColorsC[3].position = 18;
+          top6ColorsC[4].position = 17;
+          top6ColorsC[5].position = 16;
           // Display the top 6 CMYK colors
-          alert("Top 6 CMYK colors: " + top6ColorsC);
+          alert(
+            "Top 6 CMYK colors: " +
+              top6ColorsC[0].name +
+              top6ColorsC[1].name +
+              top6ColorsC[2].name +
+              top6ColorsC[3].name +
+              top6ColorsC[4].name +
+              top6ColorsC[5].name
+          );
+
+          // Include color values in the text frames
+          for (var j = 0; j < top6ColorsC.length; j++) {
+            var content = top6ColorsC[j].name;
+            var pos = top6ColorsC[j].position;
+            var topColor = top6ColorsC[j].color;
+            textFrames.push({
+              content: content,
+              id: "ColorID" + (j + 1),
+              c: 0,
+              m: 0,
+              y: 0,
+              k: 100,
+              position: pos,
+            });
+          }
         } else {
           textFrames = [
             {
@@ -696,10 +724,10 @@ okButton.onClick = function () {
           // Check if the item has name color
           if (currentItem.name.indexOf("color") !== -1) {
             var color = top6ColorsC[6 - colorIndex];
-            currentItem.fillColor.cyan = color[0];
-            currentItem.fillColor.magenta = color[1];
-            currentItem.fillColor.yellow = color[2];
-            currentItem.fillColor.black = color[3];
+            currentItem.fillColor.cyan = color.color[0];
+            currentItem.fillColor.magenta = color.color[1];
+            currentItem.fillColor.yellow = color.color[2];
+            currentItem.fillColor.black = color.color[3];
             colorIndex++;
           }
         }
@@ -718,6 +746,9 @@ okButton.onClick = function () {
             textFrames[k].k
           );
         }
+        /* for (var k = 0; k < 70; k++) {
+          UpdateNow(k, k, 0, 0, 0, 100);
+        } */
 
         fichaDialog.close();
       };
@@ -757,8 +788,11 @@ function cmykToRgb(c, m, y, k) {
 function integerPart(number) {
   const numberString = number.toString();
   const dotIndex = numberString.indexOf(".");
+  var response = 0;
   if (dotIndex !== -1) {
-    return parseInt(numberString.substring(0, dotIndex), 10);
+    response = parseInt(numberString.substring(0, dotIndex), 10);
+    return response;
   }
-  return parseInt(numberString, 10);
+  response = parseInt(numberString, 10);
+  return response;
 }
