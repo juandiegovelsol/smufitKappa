@@ -207,22 +207,12 @@ okButton.onClick = function () {
           textFrame1.contents = value;
 
           // Set the fill color of the text frame
-          /* textFrame1.layer.color.red = r;
-          textFrame1.layer.color.green = g;
-          textFrame1.layer.color.blue = b; */
           textFrame1.textRange.characterAttributes.fillColor.cyan = c;
           textFrame1.textRange.characterAttributes.fillColor.magenta = m;
           textFrame1.textRange.characterAttributes.fillColor.yellow = y;
           textFrame1.textRange.characterAttributes.fillColor.black = k;
         }
       }
-
-      /* addColorRow(colorTitleBox, "1:");
-      addColorRow(colorTitleBox, "2:");
-      addColorRow(colorTitleBox, "3:");
-      addColorRow(colorTitleBox, "4:");
-      addColorRow(colorTitleBox, "5:");
-      addColorRow(colorTitleBox, "6:"); */
 
       // Selectable Field for Color reference
       var referenceDropdownGroup = fichaDialog.add("group");
@@ -251,6 +241,9 @@ okButton.onClick = function () {
         var destinationDoc = app.activeDocument;
         var symbolCopy = null;
         var symbolItem3 = null;
+
+        var top6ColorsC = [];
+        var sourceDoc = null;
 
         var textFrames = [];
         if (flexoDigitalV === "Digital") {
@@ -374,9 +367,6 @@ okButton.onClick = function () {
           // Get the 6 most common CMYK colors
           /* var top6Colors = []; */
 
-          //CONTINUE HERE INTEGER PART IS NOT WORKING
-
-          var top6ColorsC = [];
           for (var i = 0; i < Math.min(6, sortedColors.length); i++) {
             var color = sortedColors[i].key.split(",");
             var name = "";
@@ -414,7 +404,7 @@ okButton.onClick = function () {
           top6ColorsC[4].position = 17;
           top6ColorsC[5].position = 16;
           // Display the top 6 CMYK colors
-          alert(
+          /*  alert(
             "Top 6 CMYK colors: " +
               top6ColorsC[0].name +
               top6ColorsC[1].name +
@@ -422,20 +412,24 @@ okButton.onClick = function () {
               top6ColorsC[3].name +
               top6ColorsC[4].name +
               top6ColorsC[5].name
-          );
+          ); */
 
           // Include color values in the text frames
           for (var j = 0; j < top6ColorsC.length; j++) {
             var content = top6ColorsC[j].name;
             var pos = top6ColorsC[j].position;
             var topColor = top6ColorsC[j].color;
+            var textcolor = 100;
+            if (k > 50 || (c > 50 && m > 50)) {
+              textcolor = 0;
+            }
             textFrames.push({
               content: content,
               id: "ColorID" + (j + 1),
               c: 0,
               m: 0,
               y: 0,
-              k: 100,
+              k: textcolor,
               position: pos,
             });
           }
@@ -533,7 +527,7 @@ okButton.onClick = function () {
           }
 
           open(filePath, null);
-          var sourceDoc = app.activeDocument;
+          sourceDoc = app.activeDocument;
 
           function addColorRow(parent, labelText, sourceDoc) {
             var colorGroup = parent.add("group");
@@ -607,16 +601,23 @@ okButton.onClick = function () {
                 var m = thisColor.magenta;
                 var y = thisColor.yellow;
                 var rgb = cmykToRgb(c, m, y, k);
+                var textcolor = 100;
+                if (k > 50 || (c > 50 && m > 50)) {
+                  textcolor = 0;
+                }
                 var colorInput = {
                   colorInputText: colorInputText,
-                  c: c,
-                  m: m,
-                  y: y,
-                  k: k,
+                  c: 0,
+                  m: 0,
+                  y: 0,
+                  k: textcolor,
                 };
+
+                top6ColorsC.push({ color: [c, m, y, k] });
                 colorValues.push(colorInput);
               }
             }
+            top6ColorsC.reverse();
             // Include color values in the text frames
             for (var j = 0; j < colorValues.length; j++) {
               var content = colorValues[j].colorInputText;
@@ -718,16 +719,30 @@ okButton.onClick = function () {
 
         var colorIndex = 1;
         // Iterate through page items to identify the color rectangles
+        app.activeDocument = thisDocument;
         for (var i = 0; i < thisDocument.pageItems.length; i++) {
           var currentItem = thisDocument.pageItems[i];
 
           // Check if the item has name color
+          //CONTINUAR AQUI, ALGO RARO PASA CUANDO SE INTENTA ACTUALIZAR EL FONDO EN FICHA FLEXO
+
           if (currentItem.name.indexOf("color") !== -1) {
             var color = top6ColorsC[6 - colorIndex];
-            currentItem.fillColor.cyan = color.color[0];
+            if (currentItem.fillColor.cyan !== undefined) {
+              currentItem.fillColor.cyan = color.color[0];
+              currentItem.fillColor.magenta = color.color[1];
+              currentItem.fillColor.yellow = color.color[2];
+              currentItem.fillColor.black = color.color[3];
+            } else if (currentItem.fillColor.spot.color.cyan !== undefined) {
+              currentItem.fillColor.spot.color.cyan = color.color[0];
+              currentItem.fillColor.spot.color.magenta = color.color[1];
+              currentItem.fillColor.spot.color.yellow = color.color[2];
+              currentItem.fillColor.spot.color.black = color.color[3];
+            }
+            /* currentItem.fillColor.cyan = color.color[0];
             currentItem.fillColor.magenta = color.color[1];
             currentItem.fillColor.yellow = color.color[2];
-            currentItem.fillColor.black = color.color[3];
+            currentItem.fillColor.black = color.color[3]; */
             colorIndex++;
           }
         }
@@ -749,7 +764,7 @@ okButton.onClick = function () {
         /* for (var k = 0; k < 70; k++) {
           UpdateNow(k, k, 0, 0, 0, 100);
         } */
-
+        /* sourceDoc.close(SaveOptions.DONOTSAVECHANGES); */
         fichaDialog.close();
       };
 
