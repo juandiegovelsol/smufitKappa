@@ -529,156 +529,6 @@ okButton.onClick = function () {
           open(filePath, null);
           sourceDoc = app.activeDocument;
 
-          /* function addColorRow(parent, labelText, sourceDoc) {
-            var colorGroup = parent.add("group");
-            colorGroup.orientation = "row";
-            colorGroup.alignChildren = ["left", "center"];
-
-            colorGroup.add("statictext", undefined, labelText);
-            var colorEdit = colorGroup.add("edittext", undefined, "");
-            var colorButton = colorGroup.add(
-              "button",
-              undefined,
-              "Seleccionar Color"
-            );
-
-            colorButton.onClick = function () {
-              var colorDialog = new Window("dialog", "Selecciona Color");
-              var colorGroupDialog = colorDialog.add("group");
-              colorGroupDialog.add("statictext", undefined, "Color:");
-              var pantoneDropdown = colorGroupDialog.add("dropdownlist");
-
-              var colorPreview = colorGroupDialog.add("panel");
-              colorPreview.size = [30, 20];
-
-              // Populate dropdown list with Pantone colors from sourceDoc.swatches
-              for (var i = 0; i < sourceDoc.swatches.length; i++) {
-                var swatch = sourceDoc.swatches[i];
-                if (swatch.name.indexOf("PANTONE") !== -1) {
-                  pantoneDropdown.add("item", swatch.name);
-                }
-              }
-
-              var okButton = colorDialog.add("button", undefined, "OK");
-              var cancelButton = colorDialog.add(
-                "button",
-                undefined,
-                "Cancelar"
-              );
-
-              pantoneDropdown.onChange = function () {
-                var selectedPantone = pantoneDropdown.selection;
-                if (selectedPantone) {
-                  var selectedColor = selectedPantone.text;
-                  colorEdit.text = selectedColor;
-
-                  // Draw a rectangle to simulate the color preview
-                  // colorPreview.graphics.backgroundColor = undefined; // Clear previous color
-                  var swatchColor =
-                    sourceDoc.swatches.getByName(selectedColor).color;
-                  var g = colorPreview.graphics;
-                  g.rectPath(0, 0, colorPreview.size[0], colorPreview.size[1]);
-
-                  //CONTINUE HERE!
-                  var newColor = g.newBrush(0, [0, 1, 0, 1]);
-                  g.fillPath(newColor);
-                }
-              };
-
-              okButton.onClick = function () {
-                var selectedPantone = pantoneDropdown.selection;
-                if (!selectedPantone) {
-                  alert("Ingresar un código de color válido");
-                  return;
-                }
-                colorEdit.text = selectedPantone.text;
-                colorDialog.close();
-              };
-
-              cancelButton.onClick = function () {
-                colorDialog.close();
-              };
-
-              colorDialog.show();
-            };
-          } */
-
-          function addColorRow(parent, labelText, sourceDoc) {
-            var colorGroup = parent.add("group");
-            colorGroup.orientation = "row";
-            colorGroup.alignChildren = ["left", "center"];
-
-            colorGroup.add("statictext", undefined, labelText);
-            var colorEdit = colorGroup.add("edittext", undefined, "");
-            var colorButton = colorGroup.add(
-              "button",
-              undefined,
-              "Seleccionar Color"
-            );
-
-            colorButton.onClick = function () {
-              var colorDialog = new Window("dialog", "Selecciona Color");
-              var colorGroupDialog = colorDialog.add("group");
-              colorGroupDialog.add("statictext", undefined, "Color:");
-              var pantoneDropdown = colorGroupDialog.add("dropdownlist");
-
-              var colorPreview = colorGroupDialog.add("panel");
-              colorPreview.size = [30, 20];
-
-              // Populate dropdown list with Pantone colors from sourceDoc.swatches
-              for (var i = 0; i < sourceDoc.swatches.length; i++) {
-                var swatch = sourceDoc.swatches[i];
-                if (swatch.name.indexOf("PANTONE") !== -1) {
-                  pantoneDropdown.add("item", swatch.name);
-                }
-              }
-
-              var okButton = colorDialog.add("button", undefined, "OK");
-              var cancelButton = colorDialog.add(
-                "button",
-                undefined,
-                "Cancelar"
-              );
-
-              pantoneDropdown.onChange = function () {
-                var selectedPantone = pantoneDropdown.selection;
-                if (selectedPantone) {
-                  var selectedColor = selectedPantone.text;
-                  colorEdit.text = selectedColor;
-
-                  // Change the panel color to the selected color
-                  var swatchColor =
-                    sourceDoc.swatches.getByName(selectedColor).color;
-                  var g = colorPreview.graphics;
-                  g.rectPath(0, 0, colorPreview.size[0], colorPreview.size[1]);
-                  var newColor = g.newBrush(g.BrushType.SOLID_COLOR, [
-                    swatchColor.spot.color.c / 100,
-                    swatchColor.spot.color.m / 100,
-                    swatchColor.spot.color.y / 100,
-                    1,
-                  ]);
-                  g.fillPath(newColor);
-                }
-              };
-
-              okButton.onClick = function () {
-                var selectedPantone = pantoneDropdown.selection;
-                if (!selectedPantone) {
-                  alert("Ingresar un código de color válido");
-                  return;
-                }
-                colorEdit.text = selectedPantone.text;
-                colorDialog.close();
-              };
-
-              cancelButton.onClick = function () {
-                colorDialog.close();
-              };
-
-              colorDialog.show();
-            };
-          }
-
           addColorRow(colorTitleBox, "1:", sourceDoc);
           addColorRow(colorTitleBox, "2:", sourceDoc);
           addColorRow(colorTitleBox, "3:", sourceDoc);
@@ -734,42 +584,6 @@ okButton.onClick = function () {
           colorDialog.show();
         }
 
-        if (flexoDigitalV === "Digital") {
-          sourceSymbol = symbols["FITXA DIGITAL 2"];
-        } else {
-          sourceSymbol = symbols["FITXA 2"];
-        }
-
-        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
-        symbolCopy = symbolItem3.duplicate(destinationDoc);
-
-        //Positions ficha symbol
-        if (destinationDoc.height < 600) {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 50,
-            symbolCopy.position[1] - 4000,
-          ];
-        } else if (destinationDoc.height < 1000) {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 100,
-            symbolCopy.position[1] - 4050,
-          ];
-        } else {
-          symbolCopy.position = [
-            symbolCopy.position[0] - 150,
-            symbolCopy.position[1] - 4100,
-          ];
-        }
-
-        // Scales ficha symbol according to destinationdoc heigth
-        var documentHeight = destinationDoc.height;
-        var originalSymbolHeight = symbolCopy.height;
-        var scaleFactor = documentHeight / originalSymbolHeight;
-        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
-
-        //Brakes symbolCopy symbol to be edditable
-        symbolCopy.breakLink();
-
         //Inserts the background layer depending on user selection
         var targetDoc = app.activeDocument;
 
@@ -815,6 +629,42 @@ okButton.onClick = function () {
           }
         }
 
+        if (flexoDigitalV === "Digital") {
+          sourceSymbol = symbols["FITXA DIGITAL 2"];
+        } else {
+          sourceSymbol = symbols["FITXA 2"];
+        }
+
+        symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
+        symbolCopy = symbolItem3.duplicate(destinationDoc);
+
+        //Positions ficha symbol
+        if (destinationDoc.height < 600) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 50,
+            symbolCopy.position[1] - 4000,
+          ];
+        } else if (destinationDoc.height < 1000) {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 100,
+            symbolCopy.position[1] - 4050,
+          ];
+        } else {
+          symbolCopy.position = [
+            symbolCopy.position[0] - 150,
+            symbolCopy.position[1] - 4100,
+          ];
+        }
+
+        // Scales ficha symbol according to destinationdoc heigth
+        var documentHeight = destinationDoc.height;
+        var originalSymbolHeight = symbolCopy.height;
+        var scaleFactor = documentHeight / originalSymbolHeight;
+        symbolCopy.resize(scaleFactor * 180, scaleFactor * 180);
+
+        //Brakes symbolCopy symbol to be edditable
+        symbolCopy.breakLink();
+
         var colorIndex = 1;
         // Iterate through page items to identify the color rectangles
         app.activeDocument = thisDocument;
@@ -822,7 +672,6 @@ okButton.onClick = function () {
           var currentItem = thisDocument.pageItems[i];
 
           // Check if the item has name color
-          //CONTINUAR AQUI, ALGO RARO PASA CUANDO SE INTENTA ACTUALIZAR EL FONDO EN FICHA FLEXO
 
           if (currentItem.name.indexOf("color") !== -1) {
             var color = top6ColorsC[6 - colorIndex];
@@ -908,4 +757,97 @@ function integerPart(number) {
   }
   response = parseInt(numberString, 10);
   return response;
+}
+
+function addColorRow(parent, labelText, sourceDoc) {
+  var colorGroup = parent.add("group");
+  colorGroup.orientation = "row";
+  colorGroup.alignChildren = ["left", "center"];
+
+  colorGroup.add("statictext", undefined, labelText);
+  var colorEdit = colorGroup.add("edittext", undefined, "");
+  var colorButton = colorGroup.add("button", undefined, "Select Color");
+
+  colorButton.onClick = function () {
+    var colorDialog = new Window("dialog", "Select Color");
+    var colorGroupDialog = colorDialog.add("group");
+    colorGroupDialog.add("statictext", undefined, "Color:");
+    var pantoneDropdown = colorGroupDialog.add("dropdownlist");
+
+    var colorPreview = colorGroupDialog.add("panel");
+    colorPreview.size = [30, 20];
+    var colorPreviewGraphics = colorPreview.graphics;
+    colorPreview.fillBrush = colorPreviewGraphics.newBrush(
+      colorPreviewGraphics.BrushType.SOLID_COLOR,
+      [0, 0, 0, 1]
+    );
+
+    colorPreview.onDraw = function () {
+      with (this) {
+        graphics.rectPath(0, 0, size[0], size[1]);
+        graphics.fillPath(fillBrush);
+      }
+    };
+
+    // Populate dropdown list with Pantone colors from sourceDoc.swatches
+    for (var i = 0; i < sourceDoc.swatches.length; i++) {
+      var swatch = sourceDoc.swatches[i];
+      if (swatch.name.indexOf("PANTONE") !== -1) {
+        pantoneDropdown.add("item", swatch.name);
+      }
+    }
+
+    pantoneDropdown.onChange = function () {
+      var selectedPantone = pantoneDropdown.selection;
+      var selectedColor = selectedPantone.text;
+      colorEdit.text = selectedColor;
+
+      // Change the panel color to the selected color
+      var swatchColor = sourceDoc.swatches.getByName(selectedColor).color;
+      var cmyk = swatchColor.spot.color;
+      var rgba = cmykToRgb2(cmyk.cyan, cmyk.magenta, cmyk.yellow, cmyk.black);
+      colorPreview.fillBrush = colorPreviewGraphics.newBrush(
+        colorPreviewGraphics.BrushType.SOLID_COLOR,
+        [rgba.red / 255, rgba.green / 255, rgba.blue / 255, rgba.alpha]
+      );
+      colorPreview.visible = false; // Hide the panel briefly
+      colorPreview.visible = true; // Show the panel to trigger redraw
+    };
+
+    var okButton = colorDialog.add("button", undefined, "OK");
+    var cancelButton = colorDialog.add("button", undefined, "Cancel");
+
+    okButton.onClick = function () {
+      var selectedPantone = pantoneDropdown.selection;
+      if (!selectedPantone) {
+        alert("Please select a valid color code");
+        return;
+      }
+      colorEdit.text = selectedPantone.text;
+      colorDialog.close();
+    };
+
+    cancelButton.onClick = function () {
+      colorDialog.close();
+    };
+
+    colorDialog.show(); // Show the dialog window
+  };
+}
+
+function cmykToRgb2(c, m, y, k) {
+  // Conversión de valores CMYK a valores entre 0 y 1
+  var r = 1 - Math.min(1, (c / 100) * (1 - k / 100) + k / 100);
+  var g = 1 - Math.min(1, (m / 100) * (1 - k / 100) + k / 100);
+  var b = 1 - Math.min(1, (y / 100) * (1 - k / 100) + k / 100);
+
+  // Retornar los valores en el rango de 0 a 1
+  var rgba = {
+    red: Math.round(r * 255),
+    green: Math.round(g * 255),
+    blue: Math.round(b * 255),
+    alpha: 1,
+  };
+
+  return rgba;
 }
