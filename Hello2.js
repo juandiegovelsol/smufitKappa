@@ -49,6 +49,8 @@ var checkbox3 = checkboxGroup.add("checkbox", undefined, "Ficha");
 var buttonGroup = dialog.add("group");
 var okButton = buttonGroup.add("button", undefined, "Ejecutar");
 var cancelButton = buttonGroup.add("button", undefined, "Cancelar");
+var filePath = "";
+var sourceDoc = null;
 
 okButton.onClick = function () {
   var selectedOption1 = dropdown1.selection.text;
@@ -165,28 +167,7 @@ okButton.onClick = function () {
         return textFrame;
       }
 
-      //Function to get current date in the format DD/MM/YY
-      function getCurrentDate() {
-        var currentDate = new Date();
-
-        // Get day, month, and year from the current date
-        var day = currentDate.getDate();
-        var month = currentDate.getMonth() + 1; // Months are zero-based (January is 0), so add 1
-        var year = currentDate.getFullYear() % 100; // Get last two digits of the year
-
-        // Format day, month, and year to have leading zeros if necessary
-        var formattedDay = (day < 10 ? "0" : "") + day;
-        var formattedMonth = (month < 10 ? "0" : "") + month;
-        var formattedYear = (year < 10 ? "0" : "") + year;
-
-        // Construct the date string in DD/MM/YY format
-        var formattedDate =
-          formattedDay + "/" + formattedMonth + "/" + formattedYear;
-
-        return formattedDate;
-      }
-
-      function UpdateNow(position, value, c, m, y, k) {
+      /*       function UpdateNow(position, value, c, m, y, k) {
         if (c === undefined) {
           c = 0;
         }
@@ -212,7 +193,7 @@ okButton.onClick = function () {
           textFrame1.textRange.characterAttributes.fillColor.yellow = y;
           textFrame1.textRange.characterAttributes.fillColor.black = k;
         }
-      }
+      } */
 
       // Selectable Field for Color reference
       var referenceDropdownGroup = fichaDialog.add("group");
@@ -243,7 +224,7 @@ okButton.onClick = function () {
         var symbolItem3 = null;
 
         var top6ColorsC = [];
-        var sourceDoc = null;
+        /* var sourceDoc = null; */
 
         var textFrames = [];
         if (flexoDigitalV === "Digital") {
@@ -512,17 +493,17 @@ okButton.onClick = function () {
           // Depending on acabado value opens diferent library
 
           if (acabadoV === "Blanco Estucado") {
-            var filePath = new File(
+            filePath = new File(
               "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_coated.ai"
             );
           } else if (acabadoV === "Blanco Mate") {
-            var filePath = new File(
+            filePath = new File(
               "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
             );
           } else if (acabadoV === "Marrón") {
             //Change this whit GCMI library
-            var filePath = new File(
-              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai"
+            filePath = new File(
+              "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/GCMI_COLORS.ai"
             );
           }
 
@@ -698,20 +679,27 @@ okButton.onClick = function () {
         var textSize = 50;
 
         //Insert text frames
+        app.activeDocument = thisDocument;
+
         for (var k = 0; k < textFrames.length; k++) {
+          var textFrame1 = activeDocument.textFrames[textFrames[k].position];
           UpdateNow(
             textFrames[k].position,
             textFrames[k].content,
             textFrames[k].c,
             textFrames[k].m,
             textFrames[k].y,
-            textFrames[k].k
+            textFrames[k].k,
+            textFrame1
           );
         }
         /* for (var k = 0; k < 70; k++) {
           UpdateNow(k, k, 0, 0, 0, 100);
         } */
         /* sourceDoc.close(SaveOptions.DONOTSAVECHANGES); */
+        if (sourceDoc !== null) {
+          sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
+        }
         fichaDialog.close();
       };
 
@@ -792,7 +780,10 @@ function addColorRow(parent, labelText, sourceDoc) {
     // Populate dropdown list with Pantone colors from sourceDoc.swatches
     for (var i = 0; i < sourceDoc.swatches.length; i++) {
       var swatch = sourceDoc.swatches[i];
-      if (swatch.name.indexOf("PANTONE") !== -1) {
+      if (
+        swatch.name.indexOf("PANTONE") !== -1 ||
+        swatch.name.indexOf("GCMI") !== -1
+      ) {
         pantoneDropdown.add("item", swatch.name);
       }
     }
@@ -850,4 +841,53 @@ function cmykToRgb2(c, m, y, k) {
   };
 
   return rgba;
+}
+
+//Function to get current date in the format DD/MM/YY
+function getCurrentDate() {
+  var currentDate = new Date();
+
+  // Get day, month, and year from the current date
+  var day = currentDate.getDate();
+  var month = currentDate.getMonth() + 1; // Months are zero-based (January is 0), so add 1
+  var year = currentDate.getFullYear() % 100; // Get last two digits of the year
+
+  // Format day, month, and year to have leading zeros if necessary
+  var formattedDay = (day < 10 ? "0" : "") + day;
+  var formattedMonth = (month < 10 ? "0" : "") + month;
+  var formattedYear = (year < 10 ? "0" : "") + year;
+
+  // Construct the date string in DD/MM/YY format
+  var formattedDate = formattedDay + "/" + formattedMonth + "/" + formattedYear;
+
+  return formattedDate;
+}
+
+function UpdateNow(position, value, c, m, y, k, textFrame1) {
+  if (c === undefined) {
+    c = 0;
+  }
+  if (m === undefined) {
+    m = 0;
+  }
+  if (y === undefined) {
+    y = 0;
+  }
+  if (k === undefined) {
+    k = 0;
+  }
+  /* app.activeDocument = thisDocument; */
+  if (AIversion == "10") {
+  } else {
+    /* var textFrame1 = activeDocument.textFrames[position]; */
+    textFrame1.selected = true;
+    textFrame1.contents = value;
+
+    // Set the fill color of the text frame
+    textFrame1.textRange.characterAttributes.fillColor.cyan = c;
+    textFrame1.textRange.characterAttributes.fillColor.magenta = m;
+    textFrame1.textRange.characterAttributes.fillColor.yellow = y;
+    textFrame1.textRange.characterAttributes.fillColor.black = k;
+    var c = 0;
+  }
 }
