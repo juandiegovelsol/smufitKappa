@@ -8,10 +8,6 @@ if (scriptFolder) {
   pushFile(scripts, scriptsJSX);
   var scriptNames = [];
   pushNames(scripts, scriptNames);
-  /* for (var i = 0; i < scriptsJS.length; i++) {
-    var scriptName = scriptsJS[i].displayName;
-    scriptNames.push(scriptName); // Guarda los nombres de los scripts en un arreglo
-  } */
   var a = 0;
   var dlg = new Window("dialog", "Seleccionar script a ejecutar");
   dlg.alignChildren = ["left", "top"];
