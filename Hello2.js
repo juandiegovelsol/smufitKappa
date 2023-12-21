@@ -13,6 +13,15 @@ try {
     thisDocument = app.documents.add();
   }
 
+  var machineList = [
+    "Martin RS",
+    "Martin NT",
+    "Miniline",
+    "Celmach",
+    "Dro",
+    "Nozomi",
+  ];
+
   /* var defaultDocumentDirection =
   "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"; */
   var defaultDocumentDirection =
@@ -124,12 +133,15 @@ try {
           var listImpresora = fichaDialog.add("group");
           listImpresora.add("statictext", undefined, "Impresora: ");
           var impresora = listImpresora.add("dropdownlist");
-          impresora.add("item", "Martin RS");
-          impresora.add("item", "Martin NT");
-          impresora.add("item", "Miniline");
-          impresora.add("item", "Celmach");
-          impresora.add("item", "Dro");
-          impresora.add("item", "Nozomi");
+
+          acabado.onChange = function () {
+            var acabadoV = acabado.selection.text;
+            if (acabadoV === "Blanco Estucado") {
+              updateImpresoraList(["Asahi"], impresora); //Solo cuando acabado es estucado se muestra "Asahi", si no se muestra la lista completa
+            } else {
+              updateImpresoraList(machineList, impresora);
+            }
+          };
 
           var listCanal = fichaDialog.add("group");
           listCanal.add("statictext", undefined, "Canal: ");
@@ -164,6 +176,7 @@ try {
           additionalOKButton.onClick = function () {
             var flexoDigitalV = flexoDigital.selection.text;
             var acabadoV = acabado.selection.text;
+
             var impresoraV = impresora.selection.text;
             var canalV = canal.selection.text;
             var troquelV = troquel.text;
@@ -643,13 +656,6 @@ try {
             /* for (var k = 0; k < 70; k++) {
           UpdateNow(k, k, 0, 0, 0, 100);
         } */
-            /* sourceDoc.close(SaveOptions.DONOTSAVECHANGES); */
-            /* if (sourceDoc !== null) {
-              sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
-            }
-            if (newDocument !== null) {
-              newDocument.close(SaveOptions.DONOTSAVECHANGES);
-            } */
             fichaDialog.close();
           };
 
@@ -855,6 +861,13 @@ try {
       textFrame1.textRange.characterAttributes.fillColor.yellow = y;
       textFrame1.textRange.characterAttributes.fillColor.black = k;
       var c = 0;
+    }
+  }
+
+  function updateImpresoraList(selectedList, impresora) {
+    impresora.removeAll();
+    for (var i = 0; i < selectedList.length; i++) {
+      impresora.add("item", selectedList[i]);
     }
   }
 } catch (e) {
