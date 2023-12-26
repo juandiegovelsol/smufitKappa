@@ -1,6 +1,14 @@
-var scriptFolder = Folder.selectDialog("Selecciona la carpeta de los scripts"); // Selecciona la carpeta de los scripts
+// Obtener la ruta del archivo actual
+var currentScriptFile = File($.fileName);
 
-if (scriptFolder) {
+// Obtener la ruta del directorio del archivo actual
+var currentScriptFolder = currentScriptFile.parent;
+
+// Crear una ruta que apunte a la carpeta "scripts" dentro del directorio padre
+var scriptFolder = new Folder(currentScriptFolder + "/scripts");
+
+// Verificar si la carpeta "scripts" existe
+if (scriptFolder.exists) {
   var scriptsJS = scriptFolder.getFiles("*.js"); // Obtiene todos los archivos con extensión .jsx y .js en la carpeta seleccionada
   var scriptsJSX = scriptFolder.getFiles("*.jsx"); // Obtiene todos los archivos con extensión .jsx y .js en la carpeta seleccionada
   var scripts = [];
@@ -34,7 +42,10 @@ if (scriptFolder) {
 
   dlg.show();
 } else {
-  alert("No se ha seleccionado ninguna carpeta.");
+  // La carpeta "scripts" no existe
+  $.writeln(
+    "La carpeta 'scripts' no existe en la ruta: " + scriptsFolder.fsName
+  );
 }
 
 function pushNames(scripts, scriptNames) {

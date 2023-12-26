@@ -22,8 +22,6 @@ try {
     "Nozomi",
   ];
 
-  /* var defaultDocumentDirection =
-  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/default.ai"; */
   var defaultDocumentDirection =
     "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/SmurfitKappa - Ficha.ai";
 
