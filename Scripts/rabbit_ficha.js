@@ -22,8 +22,18 @@ try {
     "Nozomi",
   ];
 
+  // Obtener la ruta del archivo actual
+  var currentScriptFile = File($.fileName);
+  var currentScriptFolder = currentScriptFile.parent;
+
+  // Obtener la ruta de la carpeta madre
+  var parentFolder = currentScriptFolder.parent;
+
+  // Obtener la ruta de la carpeta "plantillas" que contiene la carpeta madre
+  var plantillasFolder = new Folder(parentFolder + "/plantillas");
+
   var defaultDocumentDirection =
-    "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/SmurfitKappa - Ficha.ai";
+    plantillasFolder.fsName + "/SmurfitKappa - Ficha.ai";
 
   // Create a dialog box with form fields
   var dialog = new Window("dialog", "Guias");
@@ -452,14 +462,13 @@ try {
 
               if (acabadoV === "Blanco Estucado") {
                 filePath =
-                  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_coated.ai";
+                  plantillasFolder.fsName + "/biblioteca_pantone_coated.ai";
               } else if (acabadoV === "Blanco Mate") {
                 filePath =
-                  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/biblioteca_pantone_uncoated.ai";
+                  plantillasFolder.fsName + "/biblioteca_pantone_uncoated.ai";
               } else if (acabadoV === "Marrón") {
                 //Change this whit GCMI library
-                filePath =
-                  "C:/Users/Juan Diego/Desktop/Documentos Escritorio/Rabbit/Smurfit Kappa/Plantillas/GCMI_COLORS.ai";
+                filePath = plantillasFolder.fsName + "/GCMI_COLORS.ai";
               }
 
               sourceDoc = app.open(File(filePath));
