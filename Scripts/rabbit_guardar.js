@@ -1,5 +1,8 @@
 var thisDocument = app.activeDocument;
 var textFrames = thisDocument.textFrames;
+var placedItems = thisDocument.placedItems;
+var docName = decodeURI(thisDocument.name);
+var docPath = decodeURI(thisDocument.fullName.parent);
 
 if (thisDocument.rulerUnits.toString().split(".")[1] !== "Millimeters") {
   alert(
@@ -19,10 +22,32 @@ for (var i = 0; i < textFrames.length; i++) {
   }
 }
 
-if (isDigital) {
-  var docName = decodeURI(thisDocument.name);
-  var docPath = decodeURI(thisDocument.fullName.parent);
+// Incrustar las imágenes colocadas en el documento
+for (var i = 0; i < placedItems.length; i++) {
+  var currentItem = placedItems[i];
+  if (currentItem.typename === "PlacedItem") {
+    try {
+      currentItem.embed();
+    } catch (e) {
+      alert("Error al incrustar la imagen: " + e.message);
+    }
+  }
+}
 
+if (!thisDocument.path.exists) {
+  // El documento no ha sido guardado previamente, pedir al usuario que seleccione una ubicación
+  var newDoc = File.saveDialog("Guardar como");
+  if (newDoc != null) {
+    thisDocument.saveAs(newDoc);
+    alert("El archivo se guardó como: " + decodeURI(newDoc.name));
+  } else {
+    alert("No se ha seleccionado una ubicación para guardar el archivo.");
+  }
+} else {
+  thisDocument.save();
+}
+
+if (isDigital) {
   if (docName.charAt(0) !== "D" || docName.charAt(1) !== "P") {
     var newName = "DP" + docName;
     var newDocPath = docPath + "/" + newName;
