@@ -143,12 +143,11 @@ try {
           var impresora = listImpresora.add("dropdownlist");
 
           acabado.onChange = function () {
-            var acabadoV = acabado.selection.text;
-            if (acabadoV === "Blanco Estucado") {
-              updateImpresoraList(["Asahi"], impresora); //Solo cuando acabado es estucado se muestra "Asahi", si no se muestra la lista completa
-            } else {
-              updateImpresoraList(machineList, impresora);
-            }
+            updateImpresora(acabado, flexoDigital, impresora, machineList);
+          };
+
+          flexoDigital.onChange = function () {
+            updateImpresora(acabado, flexoDigital, impresora, machineList);
           };
 
           var listCanal = fichaDialog.add("group");
@@ -268,8 +267,8 @@ try {
                   position: 22,
                 },
               ];
-
-              app.activeDocument = thisDocument;
+              var brakePoint = 0;
+              /* app.activeDocument = thisDocument;
 
               var colors = {};
 
@@ -381,7 +380,7 @@ try {
                   k: textcolor,
                   position: pos,
                 });
-              }
+              } */
             } else {
               textFrames = [
                 {
@@ -448,8 +447,120 @@ try {
                   position: 21,
                 },
               ];
+              app.activeDocument = thisDocument;
 
-              //Creates dialog window
+              var colors = {};
+
+              // Iterate through page items
+              for (var i = 0; i < thisDocument.pageItems.length; i++) {
+                var currentItem = thisDocument.pageItems[i];
+
+                // Check if the item is a filled path
+                if (currentItem.typename === "PathItem" && currentItem.filled) {
+                  if (currentItem.fillColor.cyan !== undefined) {
+                    var c = currentItem.fillColor.cyan;
+                    var m = currentItem.fillColor.magenta;
+                    var y = currentItem.fillColor.yellow;
+                    var k = currentItem.fillColor.black;
+                  } else if (
+                    currentItem.fillColor.spot.color.cyan !== undefined
+                  ) {
+                    var c = currentItem.fillColor.spot.color.cyan;
+                    var m = currentItem.fillColor.spot.color.magenta;
+                    var y = currentItem.fillColor.spot.color.yellow;
+                    var k = currentItem.fillColor.spot.color.black;
+                  }
+                  if (
+                    c !== undefined &&
+                    m !== undefined &&
+                    y !== undefined &&
+                    k !== undefined
+                  ) {
+                    // Generate a key
+                    var colorKey = c + "," + m + "," + y + "," + k;
+
+                    // Count the occurrence of each color
+                    if (!colors[colorKey]) {
+                      colors[colorKey] = 1;
+                    } else {
+                      colors[colorKey]++;
+                    }
+                  }
+                }
+              }
+
+              // Find the 6 most common CMYK colors
+              var sortedColors = [];
+              for (var key in colors) {
+                sortedColors.push({ key: key, count: colors[key] });
+              }
+
+              // Sort colors by occurrences
+              sortedColors.sort(function (a, b) {
+                return b.count - a.count;
+              });
+
+              // Get the 6 most common CMYK colors
+              for (var i = 0; i < 6; i++) {
+                var color = [];
+                var sortedColor = sortedColors[i];
+                if (sortedColor !== undefined) {
+                  color = sortedColors[i].key.split(",");
+                } else {
+                  color = [0, 0, 0, 0];
+                }
+                var name = "";
+                for (var j = 0; j < thisDocument.swatches.length; j++) {
+                  var swatch = thisDocument.swatches[j];
+                  if (swatch.color.typename === "CMYKColor") {
+                    var color1 = Math.floor(color[0]);
+                    var color2 = Math.floor(swatch.color.cyan);
+                    var color3 = Math.floor(color[1]);
+                    var color4 = Math.floor(swatch.color.magenta);
+                    var color5 = Math.floor(color[2]);
+                    var color6 = Math.floor(swatch.color.yellow);
+                    var color7 = Math.floor(color[3]);
+                    var color8 = Math.floor(swatch.color.black);
+                    if (
+                      color1 === color2 &&
+                      color3 === color4 &&
+                      color5 === color6 &&
+                      color7 === color8
+                    ) {
+                      name = swatch.name;
+                    }
+                  }
+                }
+                top6ColorsC.push({ color: color, name: name });
+              }
+              //Update colors position:
+              top6ColorsC[0].position = 18;
+              top6ColorsC[1].position = 17;
+              top6ColorsC[2].position = 16;
+              top6ColorsC[3].position = 15;
+              top6ColorsC[4].position = 14;
+              top6ColorsC[5].position = 13;
+
+              // Include color values in the text frames
+              for (var j = 0; j < top6ColorsC.length; j++) {
+                var content = top6ColorsC[j].name;
+                var pos = top6ColorsC[j].position;
+                var topColor = top6ColorsC[j].color;
+                var textcolor = 100;
+                if (k > 50 || (c > 50 && m > 50)) {
+                  textcolor = 0;
+                }
+                textFrames.push({
+                  content: content,
+                  id: "ColorID" + (j + 1),
+                  c: 0,
+                  m: 0,
+                  y: 0,
+                  k: textcolor,
+                  position: pos,
+                });
+              }
+              /*  //Creates dialog window
               var colorDialog = new Window("dialog", "Colores");
               colorDialog.alignChildren = ["left", "top"];
 
@@ -527,7 +638,7 @@ try {
                 }
                 colorDialog.close();
               };
-              colorDialog.show();
+              colorDialog.show(); */
             }
 
             //Inserts the background layer depending on user selection
@@ -615,35 +726,32 @@ try {
               symbolCopy.breakLink();
               symbolFlag = false;
             }
+            if (flexoDigitalV === "Flexo") {
+              var colorIndex = 0;
+              // Iterate through page items to identify the color rectangles
+              app.activeDocument = thisDocument;
+              for (var i = 0; i < thisDocument.pageItems.length; i++) {
+                var currentItem = thisDocument.pageItems[i];
 
-            var colorIndex = 1;
-            // Iterate through page items to identify the color rectangles
-            app.activeDocument = thisDocument;
-            for (var i = 0; i < thisDocument.pageItems.length; i++) {
-              var currentItem = thisDocument.pageItems[i];
+                // Check if the item has name color
 
-              // Check if the item has name color
-
-              if (currentItem.name.indexOf("color") !== -1) {
-                var color = top6ColorsC[6 - colorIndex];
-                if (currentItem.fillColor.cyan !== undefined) {
-                  currentItem.fillColor.cyan = color.color[0];
-                  currentItem.fillColor.magenta = color.color[1];
-                  currentItem.fillColor.yellow = color.color[2];
-                  currentItem.fillColor.black = color.color[3];
-                } else if (
-                  currentItem.fillColor.spot.color.cyan !== undefined
-                ) {
-                  currentItem.fillColor.spot.color.cyan = color.color[0];
-                  currentItem.fillColor.spot.color.magenta = color.color[1];
-                  currentItem.fillColor.spot.color.yellow = color.color[2];
-                  currentItem.fillColor.spot.color.black = color.color[3];
+                if (currentItem.name.indexOf("color") !== -1) {
+                  var color = top6ColorsC[colorIndex];
+                  if (currentItem.fillColor.cyan !== undefined) {
+                    currentItem.fillColor.cyan = color.color[0];
+                    currentItem.fillColor.magenta = color.color[1];
+                    currentItem.fillColor.yellow = color.color[2];
+                    currentItem.fillColor.black = color.color[3];
+                  } else if (
+                    currentItem.fillColor.spot.color.cyan !== undefined
+                  ) {
+                    currentItem.fillColor.spot.color.cyan = color.color[0];
+                    currentItem.fillColor.spot.color.magenta = color.color[1];
+                    currentItem.fillColor.spot.color.yellow = color.color[2];
+                    currentItem.fillColor.spot.color.black = color.color[3];
+                  }
+                  colorIndex++;
                 }
-                /* currentItem.fillColor.cyan = color.color[0];
-            currentItem.fillColor.magenta = color.color[1];
-            currentItem.fillColor.yellow = color.color[2];
-            currentItem.fillColor.black = color.color[3]; */
-                colorIndex++;
               }
             }
 
@@ -674,7 +782,7 @@ try {
 
           fichaDialog.show();
         } else {
-          alert("No symbols found in the current document.");
+          alert("No se encontraron simbolos en el archivo base.");
         }
       } else {
         alert("Debes seleccionar al menos una opción");
@@ -885,4 +993,18 @@ try {
   }
 } catch (e) {
   alert("Se produjo un error: " + e);
+}
+
+function updateImpresora(acabado, flexoDigital, impresora, machineList) {
+  var acabadoV = acabado.selection.text;
+  var flexoDigitalV = flexoDigital.selection.text;
+  if (flexoDigitalV === "Digital") {
+    updateImpresoraList(["Nozomi"], impresora);
+  } else {
+    if (acabadoV === "Blanco Estucado") {
+      updateImpresoraList(["Asahi"], impresora); //Solo cuando acabado es estucado se muestra "Asahi", si no se muestra la lista completa
+    } else {
+      updateImpresoraList(machineList, impresora);
+    }
+  }
 }
