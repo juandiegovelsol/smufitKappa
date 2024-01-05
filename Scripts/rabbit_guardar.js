@@ -34,6 +34,37 @@ for (var i = 0; i < placedItems.length; i++) {
   }
 }
 
+//Verificar si el documento tiene campos de texto editables en la capa AW -- VERIFICAR!!
+var awLayer = null;
+for (var i = 0; i < thisDocument.layers.length; i++) {
+  if (thisDocument.layers[i].name === "AW") {
+    awLayer = thisDocument.layers[i];
+    break;
+  }
+}
+if (awLayer) {
+  var textFramesInAWLayer = awLayer.textFrames;
+  var hasEditableText = false;
+
+  for (var j = 0; j < textFramesInAWLayer.length; j++) {
+    if (
+      textFramesInAWLayer[j].kind === TextType.POINTTEXT &&
+      textFramesInAWLayer[j].contents !== ""
+    ) {
+      hasEditableText = true;
+      break;
+    }
+  }
+
+  if (hasEditableText) {
+    alert(
+      "La capa 'AW' contiene campos de texto editables. Por favor, revisa y elimina los campos de texto antes de guardar."
+    );
+  }
+} else {
+  alert("El documento no tiene la capa llamada 'AW'.");
+}
+
 if (!thisDocument.path.exists) {
   // El documento no ha sido guardado previamente, pedir al usuario que seleccione una ubicación
   var newDoc = File.saveDialog("Guardar como");
