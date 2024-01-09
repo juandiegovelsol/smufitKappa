@@ -34,7 +34,7 @@ for (var i = 0; i < placedItems.length; i++) {
   }
 }
 
-//Verificar si el documento tiene campos de texto editables en la capa AW -- VERIFICAR!!
+//Verificar si el documento tiene campos de texto editables en la capa AW
 var awLayer = null;
 for (var i = 0; i < thisDocument.layers.length; i++) {
   if (thisDocument.layers[i].name === "AW") {
@@ -42,13 +42,12 @@ for (var i = 0; i < thisDocument.layers.length; i++) {
     break;
   }
 }
+
 if (awLayer) {
   var textFramesInAWLayer = awLayer.textFrames;
   var hasEditableText = false;
 
   for (var j = 0; j < textFramesInAWLayer.length; j++) {
-    var thisLayer = textFramesInAWLayer[j];
-    var control = 0;
     if (
       textFramesInAWLayer[j].kind === TextType.POINTTEXT &&
       textFramesInAWLayer[j].contents !== "" &&
@@ -68,10 +67,30 @@ if (awLayer) {
       "Se verificó que la capa 'AW' no contiene campos de texto editables. Se procederá a guardar el documento..."
     );
   }
+
+  // Verificar si la capa AW no está trazada
+  if (!awLayer.locked) {
+    // Duplicar la capa AW y trazar la capa duplicada
+    // Crear una nueva capa
+    var duplicatedAWLayer = thisDocument.layers.add();
+
+    // Asignar el nombre de la capa duplicada
+    duplicatedAWLayer.name = "AW (Duplicada)";
+
+    // Copiar los elementos de la capa original a la capa duplicada
+    for (var j = 0; j < awLayer.pageItems.length; j++) {
+      var currentItem = awLayer.pageItems[j];
+      currentItem.duplicate(duplicatedAWLayer, ElementPlacement.PLACEATEND);
+    }
+
+    duplicatedAWLayer.locked = true;
+
+    alert("Se duplicó y trazó la capa 'AW'.");
+  } else {
+    alert("La capa 'AW' ya está trazada. No se requiere acción adicional.");
+  }
 } else {
-  alert(
-    "El documento no tiene la capa llamada 'AW'. No se puede verificar si la capa contiene campos de texto editables."
-  );
+  alert("No se encontró la capa 'AW'. No se realizarán cambios.");
 }
 
 if (!thisDocument.path.exists) {
