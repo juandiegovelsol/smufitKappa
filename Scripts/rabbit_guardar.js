@@ -47,9 +47,12 @@ if (awLayer) {
   var hasEditableText = false;
 
   for (var j = 0; j < textFramesInAWLayer.length; j++) {
+    var thisLayer = textFramesInAWLayer[j];
+    var control = 0;
     if (
       textFramesInAWLayer[j].kind === TextType.POINTTEXT &&
-      textFramesInAWLayer[j].contents !== ""
+      textFramesInAWLayer[j].contents !== "" &&
+      textFramesInAWLayer[j].editable
     ) {
       hasEditableText = true;
       break;
@@ -58,11 +61,17 @@ if (awLayer) {
 
   if (hasEditableText) {
     alert(
-      "La capa 'AW' contiene campos de texto editables. Por favor, revisa y elimina los campos de texto antes de guardar."
+      "La capa 'AW' contiene campos de texto editables. Por favor revisa los campos de texto."
+    );
+  } else {
+    alert(
+      "Se verificó que la capa 'AW' no contiene campos de texto editables. Se procederá a guardar el documento..."
     );
   }
 } else {
-  alert("El documento no tiene la capa llamada 'AW'.");
+  alert(
+    "El documento no tiene la capa llamada 'AW'. No se puede verificar si la capa contiene campos de texto editables."
+  );
 }
 
 if (!thisDocument.path.exists) {
