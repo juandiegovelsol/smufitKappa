@@ -3,6 +3,17 @@ var textFrames = thisDocument.textFrames;
 var placedItems = thisDocument.placedItems;
 var docName = decodeURI(thisDocument.name);
 var docPath = decodeURI(thisDocument.fullName.parent);
+var folders = docPath.split("/");
+var clientList = [
+  {
+    name: "Rabbit",
+    symbols: "Ficha 1, Rabbit y Cualquier otro",
+  },
+  {
+    name: "Smurfit Kappa",
+    symbols: "Ficha 1, Ficha 2 y otros...",
+  },
+];
 
 if (thisDocument.rulerUnits.toString().split(".")[1] !== "Millimeters") {
   alert(
@@ -70,11 +81,11 @@ if (awLayer) {
 
   // Verificar si la capa AW no está trazada
   if (!awLayer.locked) {
+    //FALTA VERIFICAR EL CASO QUE EXISTE AW Y AW TRAZADA!!
+
     // Duplicar la capa AW y trazar la capa duplicada
-    // Crear una nueva capa
     var duplicatedAWLayer = thisDocument.layers.add();
 
-    // Asignar el nombre de la capa duplicada
     duplicatedAWLayer.name = "AW (Duplicada)";
 
     // Copiar los elementos de la capa original a la capa duplicada
@@ -91,6 +102,27 @@ if (awLayer) {
   }
 } else {
   alert("No se encontró la capa 'AW'. No se realizarán cambios.");
+}
+
+//Lanzar alerta según el nombre de la carpeta concuerda con alguno de los clientes
+var client = [];
+for (var i = 0; i < clientList.length; i++) {
+  for (var j = 0; j < folders.length; j++) {
+    if (clientList[i].name === folders[j]) {
+      client = clientList[i];
+      var a = 0;
+      break;
+    }
+  }
+  if (client.name) {
+    alert(
+      client.name +
+        ", recuerde que los símbolos " +
+        client.symbols +
+        " no deben estar presentes en el archivo."
+    );
+    break;
+  }
 }
 
 if (!thisDocument.path.exists) {
