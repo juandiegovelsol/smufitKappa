@@ -48,7 +48,10 @@ for (var i = 0; i < placedItems.length; i++) {
 //Verificar si el documento tiene campos de texto editables en la capa AW
 var awLayer = null;
 for (var i = 0; i < thisDocument.layers.length; i++) {
-  if (thisDocument.layers[i].name === "AW") {
+  if (
+    thisDocument.layers[i].name === "AW" ||
+    thisDocument.layers[i].name === "AW trazada"
+  ) {
     awLayer = thisDocument.layers[i];
     break;
   }
@@ -80,21 +83,25 @@ if (awLayer) {
   }
 
   // Verificar si la capa AW no está trazada
-  if (!awLayer.locked) {
-    //FALTA VERIFICAR EL CASO QUE EXISTE AW Y AW TRAZADA!!
-
+  if (!awLayer.locked && awLayer.name !== "AW trazada") {
     // Duplicar la capa AW y trazar la capa duplicada
     var duplicatedAWLayer = thisDocument.layers.add();
-
-    duplicatedAWLayer.name = "AW (Duplicada)";
+    duplicatedAWLayer.name = "AW trazada";
 
     // Copiar los elementos de la capa original a la capa duplicada
     for (var j = 0; j < awLayer.pageItems.length; j++) {
       var currentItem = awLayer.pageItems[j];
-      currentItem.duplicate(duplicatedAWLayer, ElementPlacement.PLACEATEND);
+      var duplicatedItem = currentItem.duplicate(
+        duplicatedAWLayer,
+        ElementPlacement.PLACEATEND
+      );
+      // Crear contornos para los elementos duplicados
+      duplicatedItem.createOutline();
     }
 
+    // Bloquear la capa duplicada
     duplicatedAWLayer.locked = true;
+    awLayer.visible = false;
 
     alert("Se duplicó y trazó la capa 'AW'.");
   } else {
