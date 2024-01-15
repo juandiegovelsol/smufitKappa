@@ -1,5 +1,5 @@
 try {
-  var AIversion = version.slice(0, 2);
+  /*  var AIversion = version.slice(0, 2);
 
   var thisDocument = null;
 
@@ -33,17 +33,17 @@ try {
   var plantillasFolder = new Folder(parentFolder + "/plantillas");
 
   var defaultDocumentDirection =
-    plantillasFolder.fsName + "/SmurfitKappa - Ficha.ai";
+    plantillasFolder.fsName + "/SmurfitKappa - Ficha.ai"; */
 
   // Create a dialog box with form fields
   var dialog = new Window("dialog", "Guias");
   dialog.alignChildren = ["left", "top"];
   // Create a selectable input field
-  var dropdownGroup1 = dialog.add("group");
+  /*  var dropdownGroup1 = dialog.add("group");
   dropdownGroup1.add("statictext", undefined, "Digital");
   var dropdown1 = dropdownGroup1.add("dropdownlist");
   dropdown1.add("item", "Si");
-  dropdown1.add("item", "No");
+  dropdown1.add("item", "No"); */
 
   var dropdownGroup2 = dialog.add("group");
   dropdownGroup2.add("statictext", undefined, "Tipo de caja");
@@ -51,7 +51,7 @@ try {
   dropdown2.add("item", "B1");
   dropdown2.add("item", "ETC...");
 
-  //Create a box that contains all checkboxes
+  /* //Create a box that contains all checkboxes
   var titleBox = dialog.add("panel");
   titleBox.text = "Simbolos a añadir";
   titleBox.orientation = "column";
@@ -65,8 +65,8 @@ try {
     "checkbox",
     undefined,
     "Escuadra de registro"
-  );
-  var checkbox3 = checkboxGroup.add("checkbox", undefined, "Ficha");
+  ); */
+  /*  var checkbox3 = checkboxGroup.add("checkbox", undefined, "Ficha"); */
 
   var buttonGroup = dialog.add("group");
   var okButton = buttonGroup.add("button", undefined, "Ejecutar");
@@ -74,23 +74,23 @@ try {
   var filePath = "";
 
   okButton.onClick = function () {
-    var selectedOption1 = dropdown1.selection.text;
+    /*  var selectedOption1 = dropdown1.selection.text; */
     var selectedOption2 = dropdown2.selection.text;
     var checkbox1Value = checkbox1.value;
     var checkbox2Value = checkbox2.value;
     var checkbox3Value = checkbox3.value;
 
-    var username = $.getenv("USERNAME");
+    /* var username = $.getenv("USERNAME");
     if (!username) {
       username = $.getenv("USER");
     }
 
     newDocument = app.open(File(defaultDocumentDirection));
-    var symbols = app.activeDocument.symbols;
+    var symbols = app.activeDocument.symbols; */
 
     try {
       if (checkbox1Value || checkbox2Value || checkbox3Value) {
-        if (checkbox1Value) {
+        /* if (checkbox1Value) {
           if (symbols.length > 0) {
             var insertionPoint = [50, 50];
             var sourceSymbol = symbols["SmurfitKappa stacked"];
@@ -118,10 +118,10 @@ try {
           } else {
             alert("No symbols found in the current document.");
           }
-        }
+        } */
 
         if (checkbox3Value) {
-          if (symbols.length > 0) {
+          /* if (symbols.length > 0) {
             //Creates dialog window
             var fichaDialog = new Window("dialog", "Ficha");
             fichaDialog.alignChildren = ["left", "top"];
@@ -596,10 +596,44 @@ try {
               fichaDialog.close();
             };
 
+            var leftLogoGroup = fichaDialog.add("group");
+            leftLogoGroup.alignChildren = ["left", "top"];
+            var leftLogo = leftLogoGroup.add(
+              "image",
+              undefined,
+              File(parentFolder + "/Logos/skw.png")
+            );
+
+            var footer = fichaDialog.add("group");
+            footer.alignChildren = ["fill", "top"];
+            footer.orientation = "row";
+
+            // Agregar logotipo orientado a la izquierda
+            var leftFieldGroup = footer.add("group");
+            leftFieldGroup.alignChildren = ["left", "top"];
+            var leftTextField = leftFieldGroup.add(
+              "statictext",
+              undefined,
+              "Versión RB1.5"
+            );
+
+            // Agregar campo de texto orientado a la derecha con texto y logotipo
+            var rightFieldGroup = footer.add("group");
+            rightFieldGroup.alignChildren = ["right", "top"];
+            var rightTextField = rightFieldGroup.add(
+              "statictext",
+              undefined,
+              "Built with ❤ by"
+            );
+            var rightLogo = rightFieldGroup.add(
+              "image",
+              undefined,
+              File(parentFolder + "/Logos/rabbits.png")
+            );
             fichaDialog.show();
           } else {
             alert("No se encontraron simbolos en el archivo base.");
-          }
+          } */
         }
       } else {
         alert("Debes seleccionar al menos una opción");
@@ -609,22 +643,22 @@ try {
     }
 
     /* newDocument.close(SaveOptions.DONOTSAVECHANGES); */
-    if (newDocument !== null) {
+    /* if (newDocument !== null) {
       newDocument.close(SaveOptions.DONOTSAVECHANGES);
     }
     if (sourceDoc !== null) {
       sourceDoc.close(SaveOptions.DONOTSAVECHANGES);
-    }
+    } */
     dialog.close();
   };
 
-  cancelButton.onClick = function () {
+  /* cancelButton.onClick = function () {
     dialog.close();
-  };
+  }; */
 
   dialog.show();
 
-  function cmykToRgb(c, m, y, k) {
+  /* function cmykToRgb(c, m, y, k) {
     var r, g, b;
 
     // CMYK to RGB conversion
@@ -650,9 +684,9 @@ try {
     }
     response = parseInt(numberString, 10);
     return response;
-  }
+  } */
 
-  function addColorRow(parent, labelText, sourceDoc) {
+  /*  function addColorRow(parent, labelText, sourceDoc) {
     var colorGroup = parent.add("group");
     colorGroup.orientation = "row";
     colorGroup.alignChildren = ["left", "center"];
@@ -786,10 +820,10 @@ try {
     if (k === undefined) {
       k = 0;
     }
-    /* app.activeDocument = thisDocument; */
+    // app.activeDocument = thisDocument;
     if (AIversion == "10") {
     } else {
-      /* var textFrame1 = activeDocument.textFrames[position]; */
+      // var textFrame1 = activeDocument.textFrames[position]; 
       textFrame1.selected = true;
       textFrame1.contents = value;
 
@@ -807,12 +841,12 @@ try {
     for (var i = 0; i < selectedList.length; i++) {
       impresora.add("item", selectedList[i]);
     }
-  }
+  } */
 } catch (e) {
   alert("Se produjo un error: " + e);
 }
 
-function updateImpresora(acabado, flexoDigital, impresora, machineList) {
+/* function updateImpresora(acabado, flexoDigital, impresora, machineList) {
   var acabadoV = acabado.selection.text;
   var flexoDigitalV = flexoDigital.selection.text;
   if (flexoDigitalV === "Digital") {
@@ -824,4 +858,4 @@ function updateImpresora(acabado, flexoDigital, impresora, machineList) {
       updateImpresoraList(machineList, impresora);
     }
   }
-}
+} */

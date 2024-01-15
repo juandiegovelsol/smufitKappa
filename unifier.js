@@ -24,6 +24,7 @@ if (scriptFolder.exists) {
   titleBox.text = "Selecciona el script a ejecutar";
   titleBox.orientation = "column";
   titleBox.alignChildren = ["left", "top"];
+  titleBox.margins.top = 20;
 
   var scriptCheckboxesGroup = titleBox.add("group");
   scriptCheckboxesGroup.alignChildren = ["left", "top"];
@@ -40,26 +41,6 @@ if (scriptFolder.exists) {
     // Personalizar el tamaño del checkbox
     checkbox.preferredSize = [200, 20]; // Ajusta los valores según sea necesario
     checkbox.index = i;
-    // Quitar el borde del checkbox
-    /* checkbox.graphics.newPath();
-    checkbox.graphics.rectPath(
-      0,
-      0,
-      checkbox.preferredSize[0],
-      checkbox.preferredSize[1]
-    );
-    checkbox.graphics.strokePath();
-    checkbox.graphics.foregroundColor = checkbox.graphics.newPen(
-      checkbox.graphics.PenType.SOLID_COLOR,
-      [1, 1, 1], // Cambia el color del fondo del checkbox según sea necesario
-      1
-    );
-    checkbox.graphics.fillPath(
-      checkbox.graphics.newBrush(
-        checkbox.graphics.BrushType.SOLID_COLOR,
-        [1, 1, 1] // Cambia el color del fondo del checkbox según sea necesario
-      )
-    ); */
 
     // Agregar un manejador de eventos para ejecutar el script al cambiar el estado del checkbox
     checkbox.onClick = function () {
@@ -72,19 +53,26 @@ if (scriptFolder.exists) {
     scriptCheckboxes.push(checkbox);
   }
 
-  var footer = dlg.add("group");
-  footer.alignChildren = ["center", "top"];
-  footer.orientation = "row";
-
-  // Agregar logotipo orientado a la izquierda
-  var leftLogoGroup = footer.add("group");
+  var leftLogoGroup = dlg.add("group");
   leftLogoGroup.alignChildren = ["left", "top"];
   var leftLogo = leftLogoGroup.add(
     "image",
     undefined,
     File(currentScriptFolder + "/Logos/skw.png")
   );
-  //leftLogo.preferredSize = [100, 13]; // Ajusta el tamaño según sea necesario
+
+  var footer = dlg.add("group");
+  footer.alignChildren = ["fill", "top"];
+  footer.orientation = "row";
+
+  // Agregar logotipo orientado a la izquierda
+  var leftFieldGroup = footer.add("group");
+  leftFieldGroup.alignChildren = ["left", "top"];
+  var leftTextField = leftFieldGroup.add(
+    "statictext",
+    undefined,
+    "Versión RB1.5"
+  );
 
   // Agregar campo de texto orientado a la derecha con texto y logotipo
   var rightFieldGroup = footer.add("group");
@@ -99,7 +87,6 @@ if (scriptFolder.exists) {
     undefined,
     File(currentScriptFolder + "/Logos/rabbits.png")
   );
-  //rightLogo.preferredSize = [20, 10]; // Ajusta el tamaño según sea necesario
 
   dlg.show();
 } else {
@@ -121,20 +108,3 @@ function pushFile(scripts, scriptFiles) {
     scripts.push(scriptFiles[i]);
   }
 }
-
-/* function resizeImage(image, maxWidth, maxHeight) {
-  var imageSize = image.icon.size;
-  var aspectRatio = imageSize[0] / imageSize[1];
-
-  if (imageSize[0] > maxWidth) {
-    image.icon.size.width = maxWidth;
-    image.icon.size.height = maxWidth / aspectRatio;
-    var a = 0;
-  }
-
-  if (imageSize[1] > maxHeight) {
-    image.icon.size.width = maxHeight * aspectRatio;
-    image.icon.size.height = maxWidth;
-    var a = 0;
-  }
-} */
