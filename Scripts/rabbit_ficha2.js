@@ -50,12 +50,21 @@ try {
 
     var listAcabadoBox = fichaDialog.add("panel");
     listAcabadoBox.text = "Acabado";
-    listAcabadoBox.orientation = "column";
+    listAcabadoBox.orientation = "row";
     listAcabadoBox.alignChildren = ["left", "top"];
-    var acabado = listAcabadoBox.add("dropdownlist");
-    acabado.add("item", "Blanco Estucado");
-    acabado.add("item", "Blanco Mate");
-    acabado.add("item", "Marrón");
+    var acabado = "";
+    var acabadoGroup = listAcabadoBox.add("group");
+    var blancoEstucadoCheckbox = acabadoGroup.add(
+      "radiobutton",
+      undefined,
+      "Blanco Estucado"
+    );
+    var blancoMateCheckbox = acabadoGroup.add(
+      "radiobutton",
+      undefined,
+      "Blanco Mate"
+    );
+    var marronCheckbox = acabadoGroup.add("radiobutton", undefined, "Marrón");
 
     var listFlexoDigital = fichaDialog.add("group");
     listFlexoDigital.add("statictext", undefined, "Flexo/Digital: ");
@@ -85,7 +94,25 @@ try {
     listImpresora.add("statictext", undefined, "Impresora: ");
     var impresora = listImpresora.add("dropdownlist");
 
-    acabado.onChange = function () {
+    // Evento al cambiar la selección
+    blancoEstucadoCheckbox.onClick = function () {
+      acabado = blancoEstucadoCheckbox.text;
+      blancoMateCheckbox.value = false;
+      marronCheckbox.value = false;
+      updateImpresora(acabado, flexoDigital, impresora, machineList);
+    };
+
+    blancoMateCheckbox.onClick = function () {
+      acabado = blancoMateCheckbox.text;
+      blancoEstucadoCheckbox.value = false;
+      marronCheckbox.value = false;
+      updateImpresora(acabado, flexoDigital, impresora, machineList);
+    };
+
+    marronCheckbox.onClick = function () {
+      acabado = marronCheckbox.text;
+      blancoEstucadoCheckbox.value = false;
+      blancoMateCheckbox.value = false;
       updateImpresora(acabado, flexoDigital, impresora, machineList);
     };
 
@@ -697,7 +724,8 @@ try {
   alert("Se produjo un error: " + e);
 }
 function updateImpresora(acabado, flexoDigital, impresora, machineList) {
-  var acabadoV = acabado.selection.text;
+  /* var acabadoV = acabado.selection.text; */
+  var acabadoV = acabado;
   var flexoDigitalV = flexoDigital.selection.text;
   if (flexoDigitalV === "Digital") {
     updateImpresoraList(["Nozomi"], impresora);
