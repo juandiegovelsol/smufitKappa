@@ -52,6 +52,7 @@ try {
     listAcabadoBox.text = "Acabado";
     listAcabadoBox.orientation = "row";
     listAcabadoBox.alignChildren = ["left", "top"];
+    listAcabadoBox.margins.top = 15;
     var acabado = "";
     var acabadoGroup = listAcabadoBox.add("group");
     var blancoEstucadoCheckbox = acabadoGroup.add(
@@ -67,21 +68,28 @@ try {
     var marronCheckbox = acabadoGroup.add("radiobutton", undefined, "Marrón");
 
     var listFlexoDigital = fichaDialog.add("group");
-    listFlexoDigital.add("statictext", undefined, "Flexo/Digital: ");
-    var flexoDigital = listFlexoDigital.add("dropdownlist");
+    listFlexoDigital.add("statictext", undefined, "Tipo de impresión ");
+    var flexoDigital = "";
+    var flexoCheckbox = listFlexoDigital.add("radiobutton", undefined, "Flexo");
+    var digitalCheckbox = listFlexoDigital.add(
+      "radiobutton",
+      undefined,
+      "Digital"
+    );
+    /* var flexoDigital = listFlexoDigital.add("dropdownlist");
     flexoDigital.add("item", "Flexo");
-    flexoDigital.add("item", "Digital");
+    flexoDigital.add("item", "Digital"); */
 
     var boxTypeGroup = fichaDialog.add("group");
     boxTypeGroup.add("statictext", undefined, "Tipo de caja");
     var boxType = boxTypeGroup.add("edittext", undefined, "");
 
     var inputGroup = fichaDialog.add("group");
-    inputGroup.add("statictext", undefined, "Troquel:");
+    inputGroup.add("statictext", undefined, "Troquel");
     var troquel = inputGroup.add("edittext", undefined, "");
 
     var listCanal = fichaDialog.add("group");
-    listCanal.add("statictext", undefined, "Canal: ");
+    listCanal.add("statictext", undefined, "Canal");
     var canal = listCanal.add("dropdownlist");
     canal.add("item", "E");
     canal.add("item", "B");
@@ -91,7 +99,7 @@ try {
     canal.add("item", "BC");
 
     var listImpresora = fichaDialog.add("group");
-    listImpresora.add("statictext", undefined, "Impresora: ");
+    listImpresora.add("statictext", undefined, "Impresora");
     var impresora = listImpresora.add("dropdownlist");
 
     // Evento al cambiar la selección
@@ -116,6 +124,18 @@ try {
       updateImpresora(acabado, flexoDigital, impresora, machineList);
     };
 
+    flexoCheckbox.onClick = function () {
+      flexoDigital = flexoCheckbox.text;
+      digitalCheckbox.value = false;
+      updateImpresora(acabado, flexoDigital, impresora, machineList);
+    };
+
+    digitalCheckbox.onClick = function () {
+      flexoDigital = digitalCheckbox.text;
+      flexoCheckbox.value = false;
+      updateImpresora(acabado, flexoDigital, impresora, machineList);
+    };
+
     flexoDigital.onChange = function () {
       updateImpresora(acabado, flexoDigital, impresora, machineList);
     };
@@ -131,8 +151,9 @@ try {
     titleBox.alignChildren = ["left", "top"];
 
     var checkboxGroup = titleBox.add("group");
-    checkboxGroup.orientation = "column";
+    checkboxGroup.orientation = "row";
     checkboxGroup.alignChildren = ["left", "top"];
+    checkboxGroup.margins.top = 10;
     var checkbox1 = checkboxGroup.add("checkbox", undefined, "Smurfit Kappa");
     var checkbox2 = checkboxGroup.add(
       "checkbox",
@@ -148,11 +169,8 @@ try {
 
     var OkButton = buttonGroup.add("button", undefined, "EJECUTAR");
     OkButton.onClick = function () {
-      var flexoDigitalV =
-        flexoDigital.selection !== null
-          ? flexoDigital.selection.text
-          : "Digital";
-      var acabadoV = acabado.selection !== null ? acabado.selection.text : "-";
+      var flexoDigitalV = flexoDigital !== "" ? flexoDigital : "Digital";
+      var acabadoV = acabado !== "" ? acabado : "-";
       var impresoraV =
         impresora.selection !== null ? impresora.selection.text : "-";
       var canalV = canal.selection !== null ? canal.selection.text : "-";
@@ -587,7 +605,7 @@ try {
 
     // Agregar logotipo orientado a la izquierda
     var leftFieldGroup = footer.add("group");
-    leftFieldGroup.alignChildren = ["left", "top"];
+    leftFieldGroup.alignChildren = ["center", "top"];
     var leftTextField = leftFieldGroup.add(
       "statictext",
       undefined,
@@ -726,7 +744,7 @@ try {
 function updateImpresora(acabado, flexoDigital, impresora, machineList) {
   /* var acabadoV = acabado.selection.text; */
   var acabadoV = acabado;
-  var flexoDigitalV = flexoDigital.selection.text;
+  var flexoDigitalV = flexoDigital;
   if (flexoDigitalV === "Digital") {
     updateImpresoraList(["Nozomi"], impresora);
   } else {
