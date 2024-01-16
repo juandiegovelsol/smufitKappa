@@ -45,7 +45,7 @@ try {
 
   if (symbols.length > 0) {
     //Creates dialog window
-    var fichaDialog = new Window("dialog", "Ficha");
+    var fichaDialog = new Window("dialog", "Insertar Ficha");
     fichaDialog.alignChildren = ["left", "top"];
 
     var listAcabadoBox = fichaDialog.add("panel");
@@ -76,31 +76,62 @@ try {
       undefined,
       "Digital"
     );
-    /* var flexoDigital = listFlexoDigital.add("dropdownlist");
-    flexoDigital.add("item", "Flexo");
-    flexoDigital.add("item", "Digital"); */
 
     var boxTypeGroup = fichaDialog.add("group");
-    boxTypeGroup.add("statictext", undefined, "Tipo de caja");
-    var boxType = boxTypeGroup.add("edittext", undefined, "");
+    var leftBoxTypeGroup = boxTypeGroup.add("group");
+    leftBoxTypeGroup.preferredSize.width = 80;
+    leftBoxTypeGroup.alignChildren = ["left", "center"];
+    leftBoxTypeGroup.add("statictext", undefined, "Tipo de caja");
+
+    var rightBoxTypeGroup = boxTypeGroup.add("group");
+    rightBoxTypeGroup.preferredSize.width = 120;
+    rightBoxTypeGroup.alignChildren = ["rigth", "center"];
+    var boxType = rightBoxTypeGroup.add("edittext", undefined, "");
+    boxType.preferredSize.width = 120;
 
     var inputGroup = fichaDialog.add("group");
-    inputGroup.add("statictext", undefined, "Troquel");
-    var troquel = inputGroup.add("edittext", undefined, "");
+    inputGroup.orientation = "row";
+
+    var leftInputGroup = inputGroup.add("group");
+    leftInputGroup.preferredSize.width = 80;
+    leftInputGroup.alignChildren = ["left", "center"];
+    leftInputGroup.add("statictext", undefined, "Troquel");
+
+    var rightInputGroup = inputGroup.add("group");
+    rightInputGroup.preferredSize.width = 120;
+    rightInputGroup.alignChildren = ["rigth", "center"];
+    var troquel = rightInputGroup.add("edittext", undefined, "");
+    troquel.preferredSize.width = 120;
 
     var listCanal = fichaDialog.add("group");
-    listCanal.add("statictext", undefined, "Canal");
-    var canal = listCanal.add("dropdownlist");
+    var leftListCanal = listCanal.add("group");
+    leftListCanal.preferredSize.width = 80;
+    leftListCanal.alignChildren = ["left", "center"];
+    leftListCanal.add("statictext", undefined, "Canal");
+
+    var rightListCanal = listCanal.add("group");
+    rightListCanal.preferredSize.width = 120;
+    rightListCanal.alignChildren = ["rigth", "center"];
+    var canal = rightListCanal.add("dropdownlist");
     canal.add("item", "E");
     canal.add("item", "B");
     canal.add("item", "S");
     canal.add("item", "EB");
     canal.add("item", "ES");
     canal.add("item", "BC");
+    canal.preferredSize.width = 120;
 
     var listImpresora = fichaDialog.add("group");
-    listImpresora.add("statictext", undefined, "Impresora");
-    var impresora = listImpresora.add("dropdownlist");
+    var leftListImpresora = listImpresora.add("group");
+    leftListImpresora.preferredSize.width = 80;
+    leftListImpresora.alignChildren = ["left", "center"];
+    leftListImpresora.add("statictext", undefined, "Impresora");
+
+    var rightListImpresora = listImpresora.add("group");
+    rightListImpresora.preferredSize.width = 120;
+    rightListImpresora.alignChildren = ["rigth", "center"];
+    var impresora = rightListImpresora.add("dropdownlist");
+    impresora.preferredSize.width = 120;
 
     // Evento al cambiar la selección
     blancoEstucadoCheckbox.onClick = function () {
@@ -141,8 +172,16 @@ try {
     };
 
     var inputGroup2 = fichaDialog.add("group");
-    inputGroup2.add("statictext", undefined, "% Impresión:");
-    var porcentajeImp = inputGroup2.add("edittext", undefined, "");
+    var leftinputGroup2 = inputGroup2.add("group");
+    leftinputGroup2.preferredSize.width = 80;
+    leftinputGroup2.alignChildren = ["left", "center"];
+    leftinputGroup2.add("statictext", undefined, "% Impresión");
+
+    var rightinputGroup2 = inputGroup2.add("group");
+    rightinputGroup2.preferredSize.width = 120;
+    rightinputGroup2.alignChildren = ["rigth", "center"];
+    var porcentajeImp = rightinputGroup2.add("edittext", undefined, "");
+    porcentajeImp.preferredSize.width = 120;
 
     //Checkboxes para simbolos a adicionar
     var titleBox = fichaDialog.add("panel");
@@ -163,11 +202,13 @@ try {
 
     var buttonGroup = fichaDialog.add("group");
     var cancelButton = buttonGroup.add("button", undefined, "CANCELAR");
+    cancelButton.size = [120, 30];
     cancelButton.onClick = function () {
       fichaDialog.close();
     };
 
     var OkButton = buttonGroup.add("button", undefined, "EJECUTAR");
+    OkButton.size = [120, 30];
     OkButton.onClick = function () {
       var flexoDigitalV = flexoDigital !== "" ? flexoDigital : "Digital";
       var acabadoV = acabado !== "" ? acabado : "-";
