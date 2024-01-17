@@ -278,7 +278,7 @@ function main() {
       if (WFS) button_dx = 2;
       b_left = b_left - button_dx;
       // создаем кнопку снять все
-      var UNCH_TEXT = "Deseleccionar todo";
+      var UNCH_TEXT = "Borrar todo";
       if (!WFS) UNCH_TEXT = "Deseleccionar";
       b_clear_all = MAKE_BUTTON(b_left, b_clear_all_y, b_w, rect, UNCH_TEXT);
       b_clear_all.onClick = B_CLEAR_ON_CLICK;
@@ -312,13 +312,7 @@ function main() {
       } // end B_DIR_DEFAULT_ON_CLICK
       // создаем кнопку выделить все
       var b_set_all_y = b_dir_default_y + b_w_dx;
-      b_set_all = MAKE_BUTTON(
-        b_left,
-        b_set_all_y,
-        b_w,
-        rect,
-        "Seleccionar todo"
-      );
+      b_set_all = MAKE_BUTTON(b_left, b_set_all_y, b_w, rect, "Check todo");
       b_set_all.onClick = B_SET_ON_CLICK;
       //
       function B_SET_ON_CLICK() {
