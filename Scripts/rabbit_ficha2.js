@@ -637,7 +637,7 @@ try {
     var leftLogo = leftLogoGroup.add(
       "image",
       undefined,
-      File(parentFolder + "/Logos/skw.png")
+      File(parentFolder + "/Logos/sk.png")
     );
 
     var footer = fichaDialog.add("group");
