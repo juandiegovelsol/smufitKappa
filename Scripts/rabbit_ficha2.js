@@ -33,7 +33,7 @@ try {
   var plantillasFolder = new Folder(parentFolder + "/plantillas");
 
   var defaultDocumentDirection =
-    plantillasFolder.fsName + "/SmurfitKappa - Ficha.ai";
+    plantillasFolder.fsName + "/SmurfitKappa - Ficha2.ai";
 
   var username = $.getenv("USERNAME");
   if (!username) {
@@ -183,6 +183,18 @@ try {
     var porcentajeImp = rightinputGroup2.add("edittext", undefined, "");
     porcentajeImp.preferredSize.width = 120;
 
+    //Checkbox para cliche
+    var titleBoxCliche = fichaDialog.add("panel");
+    titleBoxCliche.text = "Cliché sólido?";
+    titleBoxCliche.orientation = "column";
+    titleBoxCliche.alignChildren = ["left", "top"];
+
+    var checkboxGroupCliche = titleBoxCliche.add("group");
+    checkboxGroupCliche.orientation = "row";
+    checkboxGroupCliche.alignChildren = ["left", "top"];
+    checkboxGroupCliche.margins.top = 10;
+    var checkboxCliche = checkboxGroupCliche.add("checkbox", undefined, "Si");
+
     //Checkboxes para simbolos a adicionar
     var titleBox = fichaDialog.add("panel");
     titleBox.text = "Insertar Símbolos";
@@ -329,7 +341,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 23,
+            position: 24,
           },
           {
             content: impresoraV,
@@ -338,7 +350,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 45,
+            position: 46,
           },
           {
             content: canalV,
@@ -347,7 +359,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 52,
+            position: 53,
           },
           {
             content: troquelV,
@@ -356,7 +368,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 50,
+            position: 51,
           },
           {
             content: porcentajeImpV,
@@ -365,7 +377,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 43,
+            position: 44,
           },
           {
             content: boxTypeV,
@@ -374,7 +386,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 51,
+            position: 52,
           },
           {
             content: currentDateV,
@@ -383,7 +395,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 21,
+            position: 22,
           },
         ];
         app.activeDocument = thisDocument;
@@ -471,12 +483,12 @@ try {
           top6ColorsC.push({ color: color, name: name });
         }
         //Update colors position:
-        top6ColorsC[0].position = 18;
-        top6ColorsC[1].position = 17;
-        top6ColorsC[2].position = 16;
-        top6ColorsC[3].position = 15;
-        top6ColorsC[4].position = 14;
-        top6ColorsC[5].position = 13;
+        top6ColorsC[0].position = 19;
+        top6ColorsC[1].position = 18;
+        top6ColorsC[2].position = 17;
+        top6ColorsC[3].position = 16;
+        top6ColorsC[4].position = 15;
+        top6ColorsC[5].position = 14;
 
         // Include color values in the text frames
         for (var j = 0; j < top6ColorsC.length; j++) {
@@ -497,6 +509,19 @@ try {
             position: pos,
           });
         }
+      }
+
+      //Modifica cliche solido si se checkea la checkbox
+      if (checkboxCliche.value) {
+        textFrames.push({
+          content: "Sólido",
+          id: "clicheID",
+          c: 0,
+          m: 0,
+          y: 0,
+          k: 0,
+          position: 13,
+        });
       }
 
       //Inserts the background layer depending on user selection

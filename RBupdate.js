@@ -58,16 +58,18 @@ if (scriptFolder.exists) {
   var leftLogo = leftLogoGroup.add(
     "image",
     undefined,
-    File(currentScriptFolder + "/Logos/skw.png")
+    File(currentScriptFolder + "/Logos/sk.png")
   );
 
   var footer = dlg.add("group");
   footer.alignChildren = ["fill", "top"];
   footer.orientation = "row";
+  footer.preferredSize.width = 200;
 
   // Agregar logotipo orientado a la izquierda
   var leftFieldGroup = footer.add("group");
   leftFieldGroup.alignChildren = ["left", "top"];
+  leftFieldGroup.preferredSize.width = footer.preferredSize.width * 0.4;
   var leftTextField = leftFieldGroup.add(
     "statictext",
     undefined,
@@ -77,10 +79,17 @@ if (scriptFolder.exists) {
   // Agregar campo de texto orientado a la derecha con texto y logotipo
   var rightFieldGroup = footer.add("group");
   rightFieldGroup.alignChildren = ["right", "top"];
+  rightFieldGroup.justify = "right";
+  rightFieldGroup.preferredSize.width = footer.preferredSize.width * 0.6;
   var rightTextField = rightFieldGroup.add(
     "statictext",
     undefined,
     "Built with ❤ by"
+  );
+  rightTextField.graphics.foregroundColor = rightTextField.graphics.newPen(
+    rightTextField.graphics.PenType.SOLID_COLOR,
+    [0.4, 0.4, 0.4],
+    1
   );
   var rightLogo = rightFieldGroup.add(
     "image",
