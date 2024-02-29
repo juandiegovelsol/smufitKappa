@@ -185,7 +185,7 @@ try {
 
     //Checkbox para cliche
     var titleBoxCliche = fichaDialog.add("panel");
-    titleBoxCliche.text = "Cliché sólido?";
+    titleBoxCliche.text = "Cliché sólido";
     titleBoxCliche.orientation = "column";
     titleBoxCliche.alignChildren = ["left", "top"];
 
@@ -194,6 +194,18 @@ try {
     checkboxGroupCliche.alignChildren = ["left", "top"];
     checkboxGroupCliche.margins.top = 10;
     var checkboxCliche = checkboxGroupCliche.add("checkbox", undefined, "Si");
+
+    //Checkbox para simbolo SK en la ficha
+    var titleBoxLogo = fichaDialog.add("panel");
+    titleBoxLogo.text = "Incluir logo de SK en ficha";
+    titleBoxLogo.orientation = "column";
+    titleBoxLogo.alignChildren = ["left", "top"];
+
+    var checkboxGroupLogo = titleBoxLogo.add("group");
+    checkboxGroupLogo.orientation = "row";
+    checkboxGroupLogo.alignChildren = ["left", "top"];
+    checkboxGroupLogo.margins.top = 10;
+    var checkboxLogo = checkboxGroupLogo.add("checkbox", undefined, "Si");
 
     //Checkboxes para simbolos a adicionar
     var titleBox = fichaDialog.add("panel");
@@ -267,6 +279,17 @@ try {
       var textFrames = [];
 
       if (flexoDigitalV === "Digital") {
+        /* for (var i = 0; i < 57; i++) {
+          textFrames.push({
+            content: i,
+            id: "i",
+            c: 0,
+            m: 0,
+            y: 0,
+            k: 0,
+            position: i,
+          });
+        } */
         textFrames = [
           {
             content: username,
@@ -275,7 +298,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 24,
+            position: 25,
           },
           {
             content: acabadoV,
@@ -284,7 +307,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 25,
+            position: 26,
           },
           {
             content: impresoraV,
@@ -293,7 +316,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 49,
+            position: 50,
           },
           {
             content: canalV,
@@ -302,7 +325,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 56,
+            position: 57,
           },
           {
             content: troquelV,
@@ -311,7 +334,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 54,
+            position: 55,
           },
           {
             content: boxTypeV,
@@ -320,7 +343,7 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 55,
+            position: 56,
           },
           {
             content: currentDateV,
@@ -329,9 +352,21 @@ try {
             m: 0,
             y: 0,
             k: 0,
-            position: 22,
+            position: 23,
           },
         ];
+        //Modifica cliche solido si se checkea la checkbox
+        if (checkboxCliche.value) {
+          textFrames.push({
+            content: "Sólido",
+            id: "clicheID",
+            c: 0,
+            m: 0,
+            y: 0,
+            k: 0,
+            position: 0,
+          });
+        }
       } else if (flexoDigitalV === "Flexo") {
         textFrames = [
           {
@@ -398,6 +433,20 @@ try {
             position: 22,
           },
         ];
+
+        //Modifica cliche solido si se checkea la checkbox
+        if (checkboxCliche.value) {
+          textFrames.push({
+            content: "Sólido",
+            id: "clicheID",
+            c: 0,
+            m: 0,
+            y: 0,
+            k: 0,
+            position: 13,
+          });
+        }
+
         app.activeDocument = thisDocument;
 
         var colors = {};
@@ -511,19 +560,6 @@ try {
         }
       }
 
-      //Modifica cliche solido si se checkea la checkbox
-      if (checkboxCliche.value) {
-        textFrames.push({
-          content: "Sólido",
-          id: "clicheID",
-          c: 0,
-          m: 0,
-          y: 0,
-          k: 0,
-          position: 13,
-        });
-      }
-
       //Inserts the background layer depending on user selection
       var targetDoc = app.activeDocument;
 
@@ -570,9 +606,21 @@ try {
       }
 
       if (flexoDigitalV === "Digital") {
-        sourceSymbol = symbols["FITXA DIGITAL 2"];
+        if (checkboxLogo.value) {
+          //simbolo que contiene el logo
+          sourceSymbol = symbols["FITXA DIGITAL 2"];
+        } else {
+          //simbolo que no contiene el logo
+          sourceSymbol = symbols["FITXA DIGITAL 3"];
+        }
       } else {
-        sourceSymbol = symbols["FITXA 2"];
+        if (checkboxLogo.value) {
+          //simbolo que contiene el logo
+          sourceSymbol = symbols["FITXA 2"];
+        } else {
+          //simbolo que no contiene el logo
+          sourceSymbol = symbols["FITXA 3"];
+        }
       }
 
       symbolItem3 = newDocument.symbolItems.add(sourceSymbol);
