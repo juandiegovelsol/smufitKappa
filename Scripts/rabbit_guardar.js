@@ -15,6 +15,8 @@ var clientList = [
   },
 ];
 
+alert("Recuerda indicar el sentido de entrada!");
+
 if (thisDocument.rulerUnits.toString().split(".")[1] !== "Millimeters") {
   alert(
     "Las unidades de este documento son: " +
@@ -117,7 +119,6 @@ for (var i = 0; i < clientList.length; i++) {
   for (var j = 0; j < folders.length; j++) {
     if (clientList[i].name === folders[j]) {
       client = clientList[i];
-      var a = 0;
       break;
     }
   }
