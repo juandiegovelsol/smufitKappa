@@ -279,17 +279,6 @@ try {
       var textFrames = [];
 
       if (flexoDigitalV === "Digital") {
-        /* for (var i = 0; i < 57; i++) {
-          textFrames.push({
-            content: i,
-            id: "i",
-            c: 0,
-            m: 0,
-            y: 0,
-            k: 0,
-            position: i,
-          });
-        } */
         textFrames = [
           {
             content: username,
@@ -368,6 +357,17 @@ try {
           });
         }
       } else if (flexoDigitalV === "Flexo") {
+        /* for (var i = 0; i < 60; i++) {
+          textFrames.push({
+            content: i,
+            id: "i",
+            c: 0,
+            m: 0,
+            y: 0,
+            k: 0,
+            position: i,
+          });
+        } */
         textFrames = [
           {
             content: username,
@@ -444,6 +444,19 @@ try {
             y: 0,
             k: 0,
             position: 13,
+          });
+        }
+
+        //Aqui modificar COLOR GL20
+        if (acabadoV === "Blanco Estucado") {
+          textFrames.push({
+            content: "GL20",
+            id: "Color",
+            c: 0,
+            m: 0,
+            y: 0,
+            k: 0,
+            position: 57,
           });
         }
 
